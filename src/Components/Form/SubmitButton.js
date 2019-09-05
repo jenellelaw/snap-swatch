@@ -2,7 +2,7 @@ import React from 'react';
 
 const SubmitButton = () => {
   return (
-    <input type="submit" value="submit this shit" />
+    <button>generate palette!</button>
   )
 }
 

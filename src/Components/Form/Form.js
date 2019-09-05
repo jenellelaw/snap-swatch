@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Input from './Input';
+// import Input from './Input';
 import SubmitButton from './SubmitButton';
-import Qs from '../../../node_modules/qs';
-import axios from '../../../node_modules/axios';
+import Qs from 'qs';
+import axios from 'axios';
 
 
 class Form extends Component {
@@ -14,36 +14,51 @@ class Form extends Component {
     }
   }
 
-  getColors = () => {
-    axios({
-      url: 'http://proxy.hackeryou.com',
-      dataResponse: 'json',
-      paramsSerializer: function (params) {
-        return Qs.stringify(params, { arrayFormat: 'brackets' })
-      },
-      params: {
-        reqUrl: 'https://apicloud-colortag.p.rapidapi.com/tag-url.json',
-        params: {
-          palette: "simple",
-          sort: "relevance",
-          url: "https://cdn.pixabay.com/photo/2019/09/03/13/13/landscape-4449408_1280.jpg"
-        },
-        proxyHeaders: {
-          "x-rapidapi-host": "apicloud-colortag.p.rapidapi.com",
-          "x-rapidapi-key": "a036396446msh88226c6849e787cp11ea84jsn3481ae1e567d"
-        },
-        xmlToJSON: false
-      }
-    }).then((res) => {
-      console.log(res);
-    });
+  getColors = (event) => {
+    event.preventDefault();
+    const input = document.querySelector('#imageURLInput');
+
+    console.log(input.value);
+    // console.log('worked');
+
+    //   axios({
+    //     url: 'http://proxy.hackeryou.com',
+    //     dataResponse: 'json',
+    //     paramsSerializer: function (params) {
+    //       return Qs.stringify(params, { arrayFormat: 'brackets' })
+    //     },
+    //     params: {
+    //       reqUrl: 'https://apicloud-colortag.p.rapidapi.com/tag-url.json',
+    //       params: {
+    //         palette: "w3c",
+    //         sort: "relevance",
+    //         url: "https://images.unsplash.com/photo-1567637903900-7a2f05e37e1a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80"
+    //       },
+    //       proxyHeaders: {
+    //         "x-rapidapi-host": "apicloud-colortag.p.rapidapi.com",
+    //         "x-rapidapi-key": "a036396446msh88226c6849e787cp11ea84jsn3481ae1e567d"
+    //       },
+    //       xmlToJSON: false
+    //     }
+    //   }).then((res) => {
+    //     console.log(res);
+    //   });
   }
 
   render() {
     return (
-      <form action="">
-        <Input />
-        <SubmitButton onClick={this.getColors} />
+      <form onSubmit={this.getColors}>
+        <p>Create your image-inspired color palette!</p>
+        <label
+          htmlFor="imageURLInput"
+          className="visuallyHidden">
+        </label>
+        <input
+          type="text"
+          id="imageURLInput"
+          placeholder="enter image url"
+        />
+        <SubmitButton />
       </form>
     )
   }

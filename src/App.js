@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './App.scss';
-import Form from './Components/Form/Form'
-import Main from './Components/Main/Main'
+import './partials/App.scss';
+import Form from './components/form/Form'
+import Main from './components/main/Main'
 
 class App extends Component {
   render() {
