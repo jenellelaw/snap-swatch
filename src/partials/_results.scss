@@ -1,0 +1,122 @@
+.results {
+  border: 2px solid blue;
+  background: $white;
+  display: flex;
+  height: 100%;
+  padding: 3%;
+  
+  &.hide {
+    display: none;
+  }
+
+  & > * {
+    border: 2px solid pink;
+    height: 100%;
+  }
+
+  &-left {
+    flex: 1 1 40%;
+    margin-right: 5%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+
+    & > * {
+      width: 100%;
+    }
+
+    .image-container {
+      height: 60%;
+      margin: 5% 0;
+
+      img {
+        height: 100%;
+        object-fit: cover;
+        margin: 0 auto;
+      }
+    }
+
+    input,
+    button.save-palette {
+      width: 100%;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    input {
+      @include form-input (transparent, $grey, 0.75rem 2rem 1.25rem);
+      border: 3px solid $grey;
+      margin-bottom: 2rem;
+    }
+
+    button.save-palette {
+      @include form-input ($black, $white);
+    }
+  }
+
+  &-right {
+    flex: 1 1 55%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+
+    & > * {
+      width: 100%;
+    }
+
+    .current-palette-container {
+      // border: 2px solid purple;
+      height: 90%;
+      overflow: scroll;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .swatch {
+        flex: 0 1 33.33%;
+        max-height: 264px;
+        // padding: 1rem;
+
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
+
+        & > * {
+          width: 100%;
+        }
+      }
+
+      .color-blob {
+        border: 2px solid purple;
+        width: 60%;
+        height: 8vw;
+        margin-bottom: 2rem;
+        border: 1px solid pink;
+      }
+
+      p {
+        border: 1px solid blue;
+        color: $black;
+        font-size: 1.6rem;
+        font-weight: 700;
+        text-align: center;
+      }
+
+    }
+  }
+
+  &-heading {
+    color: $black;
+    font-weight: 700;
+    font-size: 2.4rem;
+
+    @media (max-width: 1280px) {
+      font-size: calc(1.8rem + (24 - 18) * (100vw - 320px) / (1280 - 320));
+    }
+
+    &.your-colors {
+      margin-bottom: 1rem;
+    }
+  }
+}
