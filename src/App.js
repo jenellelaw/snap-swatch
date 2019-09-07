@@ -4,23 +4,47 @@ import axios from 'axios';
 import Input from './components/Input';
 import Swatch from './components/Swatch';
 import './partials/App.scss';
+import firebase from './firebase';
 
 class App extends Component {
   constructor() {
     super();
 
     this.state = {
+      apiDataLoading: false,
       currentImageURL: '',
       currentPalette: [],
-      colorPaletteName: '',
-      apiDataLoading: false,
+      paletteName: '',
       submissions: [],
-      submissionNum: 0
     }
+  }
+
+  componentDidMount() {
+    //Storing Firebase data in our state object
+
+    const dbRef = firebase.database().ref();
+
+    dbRef.on('value', response => {
+      const storedSubmissions = [];
+      const data = response.val();
+
+      for (let key in data) {
+        storedSubmissions.push(data[key]);
+      }
+
+      this.setState({
+        submissions: storedSubmissions
+      })
+
+    })
   }
 
   getColors = (e) => {
     e.preventDefault();
+
+    if (document.querySelector('#currentImageURL').value === '') {
+      alert('Please enter a URL');
+    }
 
     this.setState({
       apiDataLoading: true
@@ -53,7 +77,7 @@ class App extends Component {
         currentPalette: res.data.tags,
       })
     }).catch((error) => {
-      document.querySelector('#currentImageURL').value === '' ? alert('Please enter a URL') : alert('No results found. Please try again.');
+      alert('No results found. Please try again.');
     }).finally(() => {
       this.setState({
         apiDataLoading: false
@@ -66,6 +90,25 @@ class App extends Component {
       [e.target.name]: e.target.value
     })
   }
+
+  savePalette = (e) => {
+    e.preventDefault();
+    const dbRef = firebase.database().ref();
+    const { currentImageURL, paletteName, currentPalette } = this.state;
+
+    const newPalette = {
+      image: currentImageURL,
+      paletteName: paletteName,
+      paletteColors: currentPalette
+    }
+
+    dbRef.push(newPalette);
+  }
+
+  // copyColor = (e) => {
+  //   console.log(e.target);
+  //   console.log(this.props.hexCode)
+  // }
 
   render() {
     return (
@@ -94,11 +137,11 @@ class App extends Component {
                 <div className="image-container">
                   {<img src={this.state.currentImageURL} alt="" />}
                 </div>
-                <form action="">
+                <form onSubmit={(e) => this.savePalette(e)}>
                   <Input
                     placeholder="name your color palette"
-                    name="colorPaletteName"
-                    value={this.state.colorPaletteName}
+                    name="paletteName"
+                    value={this.state.paletteName}
                     handleChange={this.handleChange}
                   />
                   <button className="save-palette">save to the color wall!</button>
@@ -113,6 +156,7 @@ class App extends Component {
                         key={index}
                         hexCode={paletteColor.color}
                         colorName={paletteColor.label}
+                        copyColor={this.copyColor}
                       />
                     )
                   })}
@@ -124,6 +168,25 @@ class App extends Component {
 
         <section className="color-wall">
           <div className="wrapper">
+            <ul>
+              {this.state.submissions.map((submission, index) => {
+                return (
+                  <li key={index} className="submission">
+                    <p className="submission-image">{submission.image}</p>
+                    <p className="submission-name">{submission.paletteName}</p>
+                    {submission.paletteColors.map(swatch => {
+                      return (
+                        <div className="submission-swatch">
+                          <p>{swatch.color}</p>
+                          <p>{swatch.label}</p>
+                        </div>
+                      )
+                    })}
+                  </li>
+                )
+              })}
+            </ul>
+
           </div>
         </section>
         {/* APP ENDS */} </div>

@@ -2,6 +2,7 @@
   border: 2px solid blue;
   background: $white;
   display: flex;
+  flex-wrap: nowrap;
   height: 100%;
   padding: 3%;
   
@@ -15,7 +16,7 @@
   }
 
   &-left {
-    flex: 1 1 40%;
+    width: 40%;
     margin-right: 5%;
     display: flex;
     flex-wrap: wrap;
@@ -26,11 +27,13 @@
     }
 
     .image-container {
-      height: 60%;
+      width: 100%;
+      max-height: 27vw;
       margin: 5% 0;
 
       img {
-        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
         object-fit: cover;
         margin: 0 auto;
       }
@@ -55,7 +58,7 @@
   }
 
   &-right {
-    flex: 1 1 55%;
+    width: 55%;
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
