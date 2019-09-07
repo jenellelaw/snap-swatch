@@ -1,11 +1,16 @@
+.reset {
+  position: absolute;
+  background: red;
+}
+
 .results {
   border: 2px solid blue;
   background: $white;
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   height: 100%;
   padding: 3%;
-  
+
   &.hide {
     display: none;
   }
@@ -15,8 +20,13 @@
     height: 100%;
   }
 
+  &-left,
+  &-right {
+    height: 60%;
+  }
+
   &-left {
-    width: 40%;
+    flex: 0 0 35%;
     margin-right: 5%;
     display: flex;
     flex-wrap: wrap;
@@ -27,8 +37,9 @@
     }
 
     .image-container {
+      border: 2px solid green;
       width: 100%;
-      max-height: 27vw;
+      max-height: 90%;
       margin: 5% 0;
 
       img {
@@ -47,28 +58,27 @@
     }
 
     input {
-      @include form-input (transparent, $grey, 0.75rem 2rem 1.25rem);
+      @include form-input(transparent, $grey, 0.75rem 2rem 1.25rem);
       border: 3px solid $grey;
       margin-bottom: 2rem;
     }
 
     button.save-palette {
-      @include form-input ($black, $white);
+      @include form-input($black, $white);
     }
   }
 
   &-right {
-    width: 55%;
+    flex: 0 0 60%;
     display: flex;
     flex-wrap: wrap;
-    align-content: flex-start;
+    align-content: space-between;
 
     & > * {
       width: 100%;
     }
 
     .current-palette-container {
-      // border: 2px solid purple;
       height: 90%;
       overflow: scroll;
       display: flex;
@@ -76,9 +86,9 @@
       justify-content: center;
 
       .swatch {
-        flex: 0 1 33.33%;
+        flex: 0 1 25%;
         max-height: 264px;
-        // padding: 1rem;
+        padding: 2rem 0;
 
         display: flex;
         flex-wrap: wrap;
@@ -93,24 +103,79 @@
       .color-blob {
         border: 2px solid purple;
         width: 60%;
-        height: 8vw;
-        margin-bottom: 2rem;
+        height: 6.15vw;
+        margin-bottom: 1rem;
         border: 1px solid pink;
+        &:hover {
+          cursor: cell;
+        }
       }
 
       p {
-        border: 1px solid blue;
+        // border: 1px solid blue;
         color: $black;
         font-size: 1.6rem;
         font-weight: 700;
         text-align: center;
       }
+    }
+  }
 
+  &-bottom {
+    width: 100%;
+    margin-top: 4%;
+    height: 35%;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+
+    & > * {
+      width: 100%;
+    }
+
+    .selected-palette {
+      border: 1px solid blue;
+      height: 45%;
+    }
+
+    form {
+      display: flex;
+      justify-content: center;
+
+      div,
+      button {
+        font-size: 1.6rem;
+      }
+
+      div {
+        flex: 0 0 45%;
+        margin-right: 5%;
+
+        input {
+          width: 100%;
+          height: 100%;
+          font-weight: bold;
+          border-radius: 50px;
+          border: 2.5px solid $darkgrey;
+          @include form-input(transparent, $black, 1rem 2rem 1.25rem);
+
+          &::placeholder {
+            color: $darkgrey;
+          }
+        }
+      }
+
+      button {
+        flex: 0 0 35%;
+        @include form-input($black, $white, 1rem 2rem 1.25rem);
+        font-weight: bold;
+      }
     }
   }
 
   &-heading {
-    color: $black;
+    color: $darkgrey;
     font-weight: 700;
     font-size: 2.4rem;
 
@@ -118,8 +183,12 @@
       font-size: calc(1.8rem + (24 - 18) * (100vw - 320px) / (1280 - 320));
     }
 
-    &.your-colors {
-      margin-bottom: 1rem;
+    &.your-palette {
+      text-align: center;
     }
   }
+}
+
+.selected-swatch {
+  background: red;
 }

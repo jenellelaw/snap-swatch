@@ -1,22 +1,26 @@
-import React, { Component } from 'react';
-import Qs from 'qs';
-import axios from 'axios';
-import Input from './components/Input';
-import Swatch from './components/Swatch';
-import './partials/App.scss';
-import firebase from './firebase';
+import React, { Component, Fragment } from "react";
+import Qs from "qs";
+import axios from "axios";
+import uuidv4 from "uuid";
+import Input from "./components/Input";
+import Swatch from "./components/Swatch";
+import "./partials/App.scss";
+import firebase from "./firebase";
 
 class App extends Component {
   constructor() {
     super();
 
     this.state = {
+      showSearch: true,
       apiDataLoading: false,
-      currentImageURL: '',
-      currentPalette: [],
-      paletteName: '',
-      submissions: [],
-    }
+      enteredImageURL: "",
+      generatedPalette: [],
+      customPalette: [],
+      swatchError: false,
+      paletteName: "",
+      submissions: []
+    };
   }
 
   componentDidMount() {
@@ -24,7 +28,7 @@ class App extends Component {
 
     const dbRef = firebase.database().ref();
 
-    dbRef.on('value', response => {
+    dbRef.on("value", response => {
       const storedSubmissions = [];
       const data = response.val();
 
@@ -34,34 +38,33 @@ class App extends Component {
 
       this.setState({
         submissions: storedSubmissions
-      })
-
-    })
+      });
+    });
   }
 
-  getColors = (e) => {
+  getColors = e => {
     e.preventDefault();
 
-    if (document.querySelector('#currentImageURL').value === '') {
-      alert('Please enter a URL');
+    if (!this.state.enteredImageURL) {
+      return alert("Please enter a URL");
     }
 
     this.setState({
       apiDataLoading: true
-    })
+    });
 
     axios({
-      url: 'http://proxy.hackeryou.com',
-      dataResponse: 'json',
-      paramsSerializer: function (params) {
-        return Qs.stringify(params, { arrayFormat: 'brackets' })
+      url: "http://proxy.hackeryou.com",
+      dataResponse: "json",
+      paramsSerializer: function(params) {
+        return Qs.stringify(params, { arrayFormat: "brackets" });
       },
       params: {
-        reqUrl: 'https://apicloud-colortag.p.rapidapi.com/tag-url.json',
+        reqUrl: "https://apicloud-colortag.p.rapidapi.com/tag-url.json",
         params: {
-          palette: "simple",
+          palette: "w3c",
           sort: "relevance",
-          url: this.state.currentImageURL
+          url: this.state.enteredImageURL
         },
         proxyHeaders: {
           "x-rapidapi-host": "apicloud-colortag.p.rapidapi.com",
@@ -69,128 +72,172 @@ class App extends Component {
         },
         xmlToJSON: false
       }
-    }).then((res) => {
-      console.log(res);
-      document.querySelector('.search').classList.add('hide');
-      document.querySelector('.results').classList.remove('hide');
-      this.setState({
-        currentPalette: res.data.tags,
-      })
-    }).catch((error) => {
-      alert('No results found. Please try again.');
-    }).finally(() => {
-      this.setState({
-        apiDataLoading: false
-      })
     })
+      .then(res => {
+        console.log(res);
+
+        this.setState({
+          showSearch: false,
+          generatedPalette: res.data.tags
+        });
+      })
+      .catch(error => {
+        alert("No results found. Please try again.");
+      })
+      .finally(() => {
+        this.setState({
+          apiDataLoading: false
+        });
+      });
   };
 
-  handleChange = (e) => {
+  handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
-    })
-  }
+    });
+  };
 
-  savePalette = (e) => {
-    e.preventDefault();
-    const dbRef = firebase.database().ref();
-    const { currentImageURL, paletteName, currentPalette } = this.state;
-
-    const newPalette = {
-      image: currentImageURL,
-      paletteName: paletteName,
-      paletteColors: currentPalette
+  addColor = hexCode => {
+    if (this.state.customPalette.length === 6) {
+      return this.setState({
+        swatchError: true
+      });
     }
 
-    dbRef.push(newPalette);
-  }
+    this.setState(prevState => ({
+      customPalette: [...prevState.customPalette, hexCode],
+      swatchError: false
+    }));
+  };
 
-  // copyColor = (e) => {
-  //   console.log(e.target);
-  //   console.log(this.props.hexCode)
-  // }
+  removeColor = hexCode => {
+    this.setState(prevState => ({
+      swatchError: false,
+      customPalette: prevState.customPalette.filter(item => {
+        return item !== hexCode;
+      })
+    }));
+  };
+
+  savePalette = e => {
+    e.preventDefault();
+    const dbRef = firebase.database().ref();
+    const { enteredImageURL, paletteName, customPalette } = this.state;
+
+    const newPalette = {
+      image: enteredImageURL,
+      paletteName: paletteName,
+      paletteColors: customPalette
+    };
+
+    dbRef.push(newPalette);
+    alert("palette has been saved");
+  };
+
+  resetSearch = () => {
+    this.setState({
+      showSearch: true,
+      enteredImageURL: "",
+      generatedPalette: [],
+      customPalette: [],
+      paletteName: ""
+    });
+  };
 
   render() {
     return (
       <div className="App">
-
         <div className="palette-generator">
           <div className="wrapper">
+            <h1>
+              <span>SnapSwatch</span>
+            </h1>
 
-            <header className="search">
-              <h1>SnapSwatch</h1>
-              <h2>Create your photo-inspired color palette!</h2>
-              <form onSubmit={(e) => this.getColors(e)}>
-                <Input
-                  placeholder="enter image url"
-                  name="currentImageURL"
-                  value={this.state.currentImageURL}
-                  handleChange={this.handleChange}
-                />
-                <button className="generate-palette">generate palette!</button>
-              </form>
-            </header>
-
-            <section className="results hide">
-              <div className="results-panel results-left">
-                <p className="results-heading">submitted image:</p>
-                <div className="image-container">
-                  {<img src={this.state.currentImageURL} alt="" />}
-                </div>
-                <form onSubmit={(e) => this.savePalette(e)}>
+            {this.state.showSearch ? (
+              <header className="search">
+                <h2>Create your photo-inspired color palette!</h2>
+                <form onSubmit={e => this.getColors(e)}>
                   <Input
-                    placeholder="name your color palette"
-                    name="paletteName"
-                    value={this.state.paletteName}
+                    placeholder="enter image url"
+                    name="enteredImageURL"
+                    value={this.state.enteredImageURL}
                     handleChange={this.handleChange}
                   />
-                  <button className="save-palette">save to the color wall!</button>
+                  <button className="generate-palette">
+                    generate palette!
+                  </button>
                 </form>
-              </div>
-              <div className="results-panel results-right">
-                <p className="results-heading your-colors">your colors:</p>
-                <ol className="current-palette-container">
-                  {this.state.currentPalette.map((paletteColor, index) => {
-                    return (
-                      <Swatch
-                        key={index}
-                        hexCode={paletteColor.color}
-                        colorName={paletteColor.label}
-                        copyColor={this.copyColor}
-                      />
-                    )
-                  })}
-                </ol>
-              </div>
-            </section>
-          </div>
-        </div> {/* PALETTE GENERATOR ENDS */}
+              </header>
+            ) : (
+              <section className="results">
+                <button className="reset" onClick={this.resetSearch}>
+                  reset
+                </button>
+                <div className="results-panel results-left">
+                  <p className="results-heading">submitted image:</p>
+                  <div className="image-container">
+                    {<img src={this.state.enteredImageURL} alt="" />}
+                  </div>
+                </div>
 
+                <div className="results-panel results-right">
+                  <p className="results-heading">generated colors:</p>
+                  <ul className="current-palette-container">
+                    {this.state.generatedPalette.map((paletteColor, index) => {
+                      return (
+                        <Swatch
+                          swatchType="generated-swatch"
+                          key={`${uuidv4()}-${index}`}
+                          hexCode={paletteColor.color}
+                          colorName={paletteColor.label}
+                          addColor={this.addColor}
+                          removeColor={this.removeColor}
+                          customPalette={this.state.customPalette}
+                        />
+                      );
+                    })}
+                  </ul>
+                </div>
+
+                <div className="results-panel results-bottom">
+                  <p className="results-heading your-palette">Your palette</p>
+                  {this.state.swatchError && alert("NO MORE")}
+                  <ul className="selected-palette"></ul>
+                  <form onSubmit={e => this.savePalette(e)}>
+                    <Input
+                      placeholder="name your color palette"
+                      name="paletteName"
+                      value={this.state.paletteName}
+                      handleChange={this.handleChange}
+                    />
+                    <button className="save-palette">
+                      save to the color wall!
+                    </button>
+                  </form>
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
+        {/* PALETTE GENERATOR ENDS */}
         <section className="color-wall">
           <div className="wrapper">
             <ul>
               {this.state.submissions.map((submission, index) => {
                 return (
-                  <li key={index} className="submission">
+                  <li key={uuidv4()} className="submission">
                     <p className="submission-image">{submission.image}</p>
                     <p className="submission-name">{submission.paletteName}</p>
-                    {submission.paletteColors.map(swatch => {
-                      return (
-                        <div className="submission-swatch">
-                          <p>{swatch.color}</p>
-                          <p>{swatch.label}</p>
-                        </div>
-                      )
-                    })}
+                    <ul></ul>
                   </li>
-                )
+                );
               })}
             </ul>
-
           </div>
         </section>
-        {/* APP ENDS */} </div>
-    )
+        {/* APP ENDS */}{" "}
+      </div>
+    );
   }
 }
 
