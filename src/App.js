@@ -1,9 +1,13 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import Qs from "qs";
 import axios from "axios";
 import uuidv4 from "uuid";
 import Input from "./components/Input";
 import Swatch from "./components/Swatch";
+import GeneratedSwatch from "./components/GeneratedSwatch";
+// import Search from "./components/Search";
+import Results from "./components/Results";
+import ColorWall from "./components/ColorWall";
 import "./partials/App.scss";
 import firebase from "./firebase";
 
@@ -202,7 +206,17 @@ class App extends Component {
                 <div className="results-panel results-bottom">
                   <p className="results-heading your-palette">Your palette</p>
                   {this.state.swatchError && alert("NO MORE")}
-                  <ul className="selected-palette"></ul>
+                  <ul className="selected-palette">
+                    {this.state.customPalette.map(swatch => {
+                      return (
+                        <GeneratedSwatch
+                          key={uuidv4()}
+                          hexCode={swatch}
+                          removeColor={this.removeColor}
+                        />
+                      );
+                    })}
+                  </ul>
                   <form onSubmit={e => this.savePalette(e)}>
                     <Input
                       placeholder="name your color palette"
