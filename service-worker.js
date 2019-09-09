@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/jenelle-law-project-5/precache-manifest.06a6fd19bf8567426fff2db4b4cc3915.js"
+  "/jenelle-law-project-5/precache-manifest.0203164374f6316d1bf9cd3c5d4a0b16.js"
 );
 
 self.addEventListener('message', (event) => {
