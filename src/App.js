@@ -1,43 +1,103 @@
-import React, { Component } from 'react';
-import Qs from 'qs';
-import axios from 'axios';
-import Input from './components/Input';
-import Swatch from './components/Swatch';
-import './partials/App.scss';
+import React, { Component } from "react";
+import Search from "./components/Search";
+import Results from "./components/Results";
+import ColorWall from "./components/ColorWall";
+import "./partials/App.scss";
+import Qs from "qs";
+import axios from "axios";
+import firebase from "./firebase";
 
 class App extends Component {
   constructor() {
     super();
 
     this.state = {
-      currentImageURL: '',
-      currentPalette: [],
-      colorPaletteName: '',
+      showSearch: true,
       apiDataLoading: false,
+      enteredImageURL: "",
+      generatedPalette: [],
+      customPalette: [],
+      swatchError: false,
+      paletteName: "",
       submissions: [],
-      submissionNum: 0
-    }
+      isTablet: false,
+      isSmallTablet: false,
+      isPhone: false
+    };
   }
 
-  getColors = (e) => {
+  componentDidMount() {
+    this.calculateScreenIfTablet();
+    this.calculateScreenIfSmallTablet();
+    this.calculateScreenIfPhone();
+    window.addEventListener("resize", this.calculateScreenIfTablet);
+    window.addEventListener("resize", this.calculateScreenIfSmallTablet);
+    window.addEventListener("resize", this.calculateScreenIfPhone);
+
+    //Storing Firebase data in our state object
+
+    const dbRef = firebase.database().ref();
+
+    dbRef.on("value", response => {
+      const storedSubmissions = [];
+      const data = response.val();
+
+      for (let key in data) {
+        storedSubmissions.push(data[key]);
+      }
+
+      this.setState({
+        submissions: storedSubmissions
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.calculateScreenIfTablet);
+    window.removeEventListener("resize", this.calculateScreenIfSmallTablet);
+  }
+
+  calculateScreenIfTablet = () => {
+    this.setState({
+      isTablet: window.innerWidth < 780 && window.innerWidth >= 600
+    });
+  };
+
+  calculateScreenIfSmallTablet = () => {
+    this.setState({
+      isSmallTablet: window.innerWidth < 600
+    });
+  };
+
+  calculateScreenIfPhone = () => {
+    this.setState({
+      isPhone: window.innerWidth < 480
+    });
+  };
+
+  getColors = e => {
     e.preventDefault();
+
+    if (!this.state.enteredImageURL) {
+      return alert("Please enter a URL");
+    }
 
     this.setState({
       apiDataLoading: true
-    })
+    });
 
     axios({
-      url: 'http://proxy.hackeryou.com',
-      dataResponse: 'json',
-      paramsSerializer: function (params) {
-        return Qs.stringify(params, { arrayFormat: 'brackets' })
+      url: "http://proxy.hackeryou.com",
+      dataResponse: "json",
+      paramsSerializer: function(params) {
+        return Qs.stringify(params, { arrayFormat: "brackets" });
       },
       params: {
-        reqUrl: 'https://apicloud-colortag.p.rapidapi.com/tag-url.json',
+        reqUrl: "https://apicloud-colortag.p.rapidapi.com/tag-url.json",
         params: {
-          palette: "simple",
+          palette: "w3c",
           sort: "relevance",
-          url: this.state.currentImageURL
+          url: this.state.enteredImageURL
         },
         proxyHeaders: {
           "x-rapidapi-host": "apicloud-colortag.p.rapidapi.com",
@@ -45,89 +105,172 @@ class App extends Component {
         },
         xmlToJSON: false
       }
-    }).then((res) => {
-      console.log(res);
-      document.querySelector('.search').classList.add('hide');
-      document.querySelector('.results').classList.remove('hide');
-      this.setState({
-        currentPalette: res.data.tags,
-      })
-    }).catch((error) => {
-      document.querySelector('#currentImageURL').value === '' ? alert('Please enter a URL') : alert('No results found. Please try again.');
-    }).finally(() => {
-      this.setState({
-        apiDataLoading: false
-      })
     })
+      .then(res => {
+        console.log(res);
+
+        this.setState({
+          showSearch: false,
+          generatedPalette: res.data.tags
+        });
+      })
+      .catch(error => {
+        alert("No results found. Please try again.");
+      })
+      .finally(() => {
+        this.setState({
+          apiDataLoading: false
+        });
+      });
   };
 
-  handleChange = (e) => {
+  handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
-    })
-  }
+    });
+  };
+
+  addColor = hexCode => {
+    if (this.state.customPalette.length === 6) {
+      this.setState({
+        swatchError: true
+      });
+    } else {
+      this.setState(prevState => ({
+        customPalette: [...prevState.customPalette, hexCode],
+        swatchError: false
+      }));
+    }
+  };
+
+  resetError = () => {
+    alert("no more!");
+    this.setState({
+      swatchError: false
+    });
+  };
+
+  removeColor = hexCode => {
+    this.setState(prevState => ({
+      swatchError: false,
+      customPalette: prevState.customPalette.filter(item => {
+        return item !== hexCode;
+      })
+    }));
+  };
+
+  savePalette = e => {
+    e.preventDefault();
+
+    const { enteredImageURL, paletteName, customPalette } = this.state;
+
+    if (paletteName) {
+      return alert("please type in a name");
+    }
+
+    if (customPalette.length < 3) {
+      return alert("please choose at least 3 colors ");
+    }
+
+    const dbRef = firebase.database().ref();
+
+    const newPalette = {
+      image: enteredImageURL,
+      paletteName: paletteName,
+      paletteColors: customPalette
+    };
+
+    dbRef.push(newPalette);
+    alert("palette has been saved");
+  };
+
+  resetSearch = () => {
+    this.setState({
+      showSearch: true,
+      enteredImageURL: "",
+      generatedPalette: [],
+      customPalette: [],
+      paletteName: ""
+    });
+  };
 
   render() {
+    const {
+      apiDataLoading,
+      showSearch,
+      enteredImageURL,
+      generatedPalette,
+      customPalette,
+      swatchError,
+      paletteName,
+      submissions,
+      isTablet,
+      isSmallTablet,
+      isPhone
+    } = this.state;
+
+    const {
+      getColors,
+      handleChange,
+      resetSearch,
+      addColor,
+      removeColor,
+      savePalette,
+      resetError
+    } = this;
+
     return (
-      <div className="App">
-
+      <div className={apiDataLoading ? "App loading" : "App"}>
         <div className="palette-generator">
-          <div className="wrapper">
+          <div className={showSearch ? "wrapper" : "wrapper white-bg"}>
+            <h1>
+              <a href="App.js">SnapSwatch</a>
+            </h1>
 
-            <header className="search">
-              <h1>SnapSwatch</h1>
-              <h2>Create your photo-inspired color palette!</h2>
-              <form onSubmit={(e) => this.getColors(e)}>
-                <Input
-                  placeholder="enter image url"
-                  name="currentImageURL"
-                  value={this.state.currentImageURL}
-                  handleChange={this.handleChange}
-                />
-                <button className="generate-palette">generate palette!</button>
-              </form>
-            </header>
+            {this.state.showSearch ? (
+              <Search
+                getColors={getColors}
+                value={enteredImageURL}
+                handleChange={handleChange}
+              />
+            ) : (
+              <Results
+                resetSearch={resetSearch}
+                enteredImageURL={enteredImageURL}
+                generatedPalette={generatedPalette}
+                addColor={addColor}
+                removeColor={removeColor}
+                customPalette={customPalette}
+                swatchError={swatchError}
+                savePalette={savePalette}
+                paletteName={paletteName}
+                handleChange={handleChange}
+                isTablet={isTablet}
+                isSmallTablet={isSmallTablet}
+                isPhone={isPhone}
+                resetError={resetError}
+              />
+            )}
 
-            <section className="results hide">
-              <div className="results-panel results-left">
-                <p className="results-heading">submitted image:</p>
-                <div className="image-container">
-                  {<img src={this.state.currentImageURL} alt="" />}
-                </div>
-                <form action="">
-                  <Input
-                    placeholder="name your color palette"
-                    name="colorPaletteName"
-                    value={this.state.colorPaletteName}
-                    handleChange={this.handleChange}
-                  />
-                  <button className="save-palette">save to the color wall!</button>
-                </form>
-              </div>
-              <div className="results-panel results-right">
-                <p className="results-heading your-colors">your colors:</p>
-                <ol className="current-palette-container">
-                  {this.state.currentPalette.map((paletteColor, index) => {
-                    return (
-                      <Swatch
-                        key={index}
-                        hexCode={paletteColor.color}
-                        colorName={paletteColor.label}
-                      />
-                    )
-                  })}
-                </ol>
-              </div>
-            </section>
+            <p className="side-text credits">
+              designed and coded by jenelle law
+            </p>
           </div>
-        </div> {/* PALETTE GENERATOR ENDS */}
 
-        <section className="color-wall">
-          <div className="wrapper">
-          </div>
-        </section>
-        {/* APP ENDS */} </div>
-    )
+          {(showSearch || isPhone) && (
+            <p className="side-text colorwall-directions">
+              {isSmallTablet ? (
+                <span className="down-arrow">&#8595;</span>
+              ) : (
+                <span>&#8592;</span>
+              )}
+              The ColorWall
+            </p>
+          )}
+        </div>
+        <ColorWall submissions={submissions} />;
+      </div>
+    );
   }
 }
 

@@ -1,17 +1,19 @@
 .search {
+  position: relative;
+  height: 100%;
+  padding: 0 30px;
   border: 4px solid $white;
   text-align: center;
 
-  &.hide {
-    display: none;
+  @media (max-width: 480px) {
+    padding: 0 7px;
+    border: none;
+    border-left: none;
+    border-right: none;
   }
 
   & > * {
     width: 100%;
-  }
-
-  h1 {
-    display: none;
   }
 
   h2 {
@@ -21,7 +23,6 @@
     @media (max-width: 1280px) {
       font-size: calc(2rem + (36 - 20) * (100vw - 320px) / (1280 - 320));
     }
-    
   }
 
   input {
@@ -29,6 +30,7 @@
     margin: 4rem 0 4.5rem;
     padding: 1.5rem 2.5rem 1.8rem;
     font-size: 2.4rem;
+
     line-height: 1;
     color: $blue;
 
@@ -36,20 +38,48 @@
       font-size: calc(1.6rem + (24 - 16) * (100vw - 320px) / (1280 - 320));
     }
 
+    @media (max-width: 1080px) {
+      width: 90%;
+    }
+
     &::placeholder {
       color: $teal;
+    }
+
+    &::selection {
+      background-color: $black;
+    }
+
+    &:focus {
+      background: $teal;
+      font-weight: bold;
+      color: $white;
+
+      &::placeholder {
+        color: $white;
+      }
     }
   }
 
   button.generate-palette {
-    @include form-input ($white, $black);
+    @include form-child($white, $black);
     font-size: 2.4rem;
     font-weight: 700;
+
+    transform: scale(1);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+      background: $orange;
+    }
+
+    &:active {
+      transform: scale(1.15);
+    }
 
     @media (max-width: 1280px) {
       font-size: calc(1.6rem + (24 - 16) * (100vw - 320px) / (1280 - 320));
     }
-
   }
 }
-
