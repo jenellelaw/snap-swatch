@@ -1,15 +1,16 @@
 import React from "react";
+import Input from "./Input";
 
-const Search = () => {
+const Search = ({ getColors, value, handleChange }) => {
   return (
     <header className="search">
       <h2>Create your photo-inspired color palette!</h2>
-      <form onSubmit={e => this.getColors(e)}>
+      <form onSubmit={e => getColors(e)}>
         <Input
           placeholder="enter image url"
           name="enteredImageURL"
-          value={this.state.enteredImageURL}
-          handleChange={this.handleChange}
+          value={value}
+          handleChange={handleChange}
         />
         <button className="generate-palette">generate palette!</button>
       </form>
@@ -18,9 +19,3 @@ const Search = () => {
 };
 
 export default Search;
-
-<Search
-  getColors={this.getColors}
-  value={this.state.enteredImageURL}
-  handleChange={this.handleChange}
-/>;

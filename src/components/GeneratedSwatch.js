@@ -1,18 +1,45 @@
-import React from "react";
+import React, { Component } from "react";
 
-const GeneratedSwatch = props => {
-  const { removeColor, hexCode } = props;
+class GeneratedSwatch extends Component {
+  constructor(props) {
+    super(props);
 
-  console.log(props);
-  return (
-    <li
-      className="color-blob"
-      onClick={() => {
-        removeColor(hexCode);
-      }}
-      style={{ background: hexCode }}
-    ></li>
-  );
-};
+    this.state = {
+      textToCopy: ""
+    };
+  }
+
+  render() {
+    const {
+      hexCode,
+      colorName,
+      addColor = () => {},
+      removeColor = () => {},
+      customPalette
+    } = this.props;
+
+    const isSelected = `swatch swatch-generated selected-swatch`;
+    const notSelected = `swatch swatch-generated`;
+
+    const selectedStatus = customPalette.includes(hexCode)
+      ? isSelected
+      : notSelected;
+
+    return (
+      <li
+        className={selectedStatus}
+        onClick={() =>
+          customPalette.includes(hexCode)
+            ? removeColor(hexCode)
+            : addColor(hexCode)
+        }
+      >
+        <div className="color-blob" style={{ background: hexCode }}></div>
+        <p className="color-name">{colorName}</p>
+        <p className="hex-code">{hexCode}</p>
+      </li>
+    );
+  }
+}
 
 export default GeneratedSwatch;

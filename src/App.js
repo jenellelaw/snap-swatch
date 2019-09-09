@@ -1,14 +1,10 @@
 import React, { Component } from "react";
-import Qs from "qs";
-import axios from "axios";
-import uuidv4 from "uuid";
-import Input from "./components/Input";
-import Swatch from "./components/Swatch";
-import GeneratedSwatch from "./components/GeneratedSwatch";
-// import Search from "./components/Search";
+import Search from "./components/Search";
 import Results from "./components/Results";
 import ColorWall from "./components/ColorWall";
 import "./partials/App.scss";
+import Qs from "qs";
+import axios from "axios";
 import firebase from "./firebase";
 
 class App extends Component {
@@ -23,11 +19,21 @@ class App extends Component {
       customPalette: [],
       swatchError: false,
       paletteName: "",
-      submissions: []
+      submissions: [],
+      isTablet: false,
+      isSmallTablet: false,
+      isPhone: false
     };
   }
 
   componentDidMount() {
+    this.calculateScreenIfTablet();
+    this.calculateScreenIfSmallTablet();
+    this.calculateScreenIfPhone();
+    window.addEventListener("resize", this.calculateScreenIfTablet);
+    window.addEventListener("resize", this.calculateScreenIfSmallTablet);
+    window.addEventListener("resize", this.calculateScreenIfPhone);
+
     //Storing Firebase data in our state object
 
     const dbRef = firebase.database().ref();
@@ -45,6 +51,29 @@ class App extends Component {
       });
     });
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.calculateScreenIfTablet);
+    window.removeEventListener("resize", this.calculateScreenIfSmallTablet);
+  }
+
+  calculateScreenIfTablet = () => {
+    this.setState({
+      isTablet: window.innerWidth < 780 && window.innerWidth >= 600
+    });
+  };
+
+  calculateScreenIfSmallTablet = () => {
+    this.setState({
+      isSmallTablet: window.innerWidth < 600
+    });
+  };
+
+  calculateScreenIfPhone = () => {
+    this.setState({
+      isPhone: window.innerWidth < 480
+    });
+  };
 
   getColors = e => {
     e.preventDefault();
@@ -103,15 +132,22 @@ class App extends Component {
 
   addColor = hexCode => {
     if (this.state.customPalette.length === 6) {
-      return this.setState({
+      this.setState({
         swatchError: true
       });
+    } else {
+      this.setState(prevState => ({
+        customPalette: [...prevState.customPalette, hexCode],
+        swatchError: false
+      }));
     }
+  };
 
-    this.setState(prevState => ({
-      customPalette: [...prevState.customPalette, hexCode],
+  resetError = () => {
+    alert("no more!");
+    this.setState({
       swatchError: false
-    }));
+    });
   };
 
   removeColor = hexCode => {
@@ -125,8 +161,18 @@ class App extends Component {
 
   savePalette = e => {
     e.preventDefault();
-    const dbRef = firebase.database().ref();
+
     const { enteredImageURL, paletteName, customPalette } = this.state;
+
+    if (paletteName) {
+      return alert("please type in a name");
+    }
+
+    if (customPalette.length < 3) {
+      return alert("please choose at least 3 colors ");
+    }
+
+    const dbRef = firebase.database().ref();
 
     const newPalette = {
       image: enteredImageURL,
@@ -149,107 +195,80 @@ class App extends Component {
   };
 
   render() {
+    const {
+      apiDataLoading,
+      showSearch,
+      enteredImageURL,
+      generatedPalette,
+      customPalette,
+      swatchError,
+      paletteName,
+      submissions,
+      isTablet,
+      isSmallTablet,
+      isPhone
+    } = this.state;
+
+    const {
+      getColors,
+      handleChange,
+      resetSearch,
+      addColor,
+      removeColor,
+      savePalette,
+      resetError
+    } = this;
+
     return (
-      <div className="App">
+      <div className={apiDataLoading ? "App loading" : "App"}>
         <div className="palette-generator">
-          <div className="wrapper">
+          <div className={showSearch ? "wrapper" : "wrapper white-bg"}>
             <h1>
-              <span>SnapSwatch</span>
+              <a href="App.js">SnapSwatch</a>
             </h1>
 
             {this.state.showSearch ? (
-              <header className="search">
-                <h2>Create your photo-inspired color palette!</h2>
-                <form onSubmit={e => this.getColors(e)}>
-                  <Input
-                    placeholder="enter image url"
-                    name="enteredImageURL"
-                    value={this.state.enteredImageURL}
-                    handleChange={this.handleChange}
-                  />
-                  <button className="generate-palette">
-                    generate palette!
-                  </button>
-                </form>
-              </header>
+              <Search
+                getColors={getColors}
+                value={enteredImageURL}
+                handleChange={handleChange}
+              />
             ) : (
-              <section className="results">
-                <button className="reset" onClick={this.resetSearch}>
-                  reset
-                </button>
-                <div className="results-panel results-left">
-                  <p className="results-heading">submitted image:</p>
-                  <div className="image-container">
-                    {<img src={this.state.enteredImageURL} alt="" />}
-                  </div>
-                </div>
-
-                <div className="results-panel results-right">
-                  <p className="results-heading">generated colors:</p>
-                  <ul className="current-palette-container">
-                    {this.state.generatedPalette.map((paletteColor, index) => {
-                      return (
-                        <Swatch
-                          swatchType="generated-swatch"
-                          key={`${uuidv4()}-${index}`}
-                          hexCode={paletteColor.color}
-                          colorName={paletteColor.label}
-                          addColor={this.addColor}
-                          removeColor={this.removeColor}
-                          customPalette={this.state.customPalette}
-                        />
-                      );
-                    })}
-                  </ul>
-                </div>
-
-                <div className="results-panel results-bottom">
-                  <p className="results-heading your-palette">Your palette</p>
-                  {this.state.swatchError && alert("NO MORE")}
-                  <ul className="selected-palette">
-                    {this.state.customPalette.map(swatch => {
-                      return (
-                        <GeneratedSwatch
-                          key={uuidv4()}
-                          hexCode={swatch}
-                          removeColor={this.removeColor}
-                        />
-                      );
-                    })}
-                  </ul>
-                  <form onSubmit={e => this.savePalette(e)}>
-                    <Input
-                      placeholder="name your color palette"
-                      name="paletteName"
-                      value={this.state.paletteName}
-                      handleChange={this.handleChange}
-                    />
-                    <button className="save-palette">
-                      save to the color wall!
-                    </button>
-                  </form>
-                </div>
-              </section>
+              <Results
+                resetSearch={resetSearch}
+                enteredImageURL={enteredImageURL}
+                generatedPalette={generatedPalette}
+                addColor={addColor}
+                removeColor={removeColor}
+                customPalette={customPalette}
+                swatchError={swatchError}
+                savePalette={savePalette}
+                paletteName={paletteName}
+                handleChange={handleChange}
+                isTablet={isTablet}
+                isSmallTablet={isSmallTablet}
+                isPhone={isPhone}
+                resetError={resetError}
+              />
             )}
+
+            <p className="side-text credits">
+              designed and coded by jenelle law
+            </p>
           </div>
+
+          {(showSearch || isPhone) && (
+            <p className="side-text colorwall-directions">
+              {isSmallTablet ? (
+                <span className="down-arrow">&#8595;</span>
+              ) : (
+                <span>&#8592;</span>
+              )}
+              The ColorWall
+            </p>
+          )}
         </div>
-        {/* PALETTE GENERATOR ENDS */}
-        <section className="color-wall">
-          <div className="wrapper">
-            <ul>
-              {this.state.submissions.map((submission, index) => {
-                return (
-                  <li key={uuidv4()} className="submission">
-                    <p className="submission-image">{submission.image}</p>
-                    <p className="submission-name">{submission.paletteName}</p>
-                    <ul></ul>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </section>
-        {/* APP ENDS */}{" "}
+        <ColorWall submissions={submissions} />;
       </div>
     );
   }

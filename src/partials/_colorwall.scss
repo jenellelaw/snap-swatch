@@ -1,3 +1,85 @@
+.color-wall {
+  padding-top: 100px;
+
+  h2 {
+    font-size: 3.6rem;
+    line-height: 1.2;
+    text-align: center;
+
+    @media (max-width: 1280px) {
+      font-size: calc(2rem + (36 - 20) * (100vw - 320px) / (1280 - 320));
+    }
+  }
+
+  h3 {
+    margin: 15px 0 90px;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.2;
+    text-align: center;
+
+    @media (max-width: 1280px) {
+      font-size: calc(1.8rem + (2 - 1.8) * (100vw - 320px) / (1280 - 320));
+    }
+  }
+
+  // .wrapper {
+  //   border: 1px solid red;
+  // }
+
+  .submissions {
+    columns: 4 320px;
+    column-gap: 50px;
+    text-align: center;
+
+    .submission {
+      background: $white;
+      padding: 30px;
+      margin: 0 1rem 50px 0;
+      display: inline-block;
+      width: 100%;
+
+      &-name {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: $white;
+        background: $black;
+        padding: 0.5rem 2rem 0.75rem;
+        margin: 0 0 20px;
+        display: inline-block;
+        // position: absolute;
+        // top: 10px;
+      }
+
+      .image-container {
+        position: relative;
+        max-width: 100%;
+        img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: cover;
+          margin: 0 auto;
+        }
+      }
+
+      .submitted-swatches {
+        width: 80%;
+        margin: 0 auto 30px;
+        display: grid;
+        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        justify-items: center;
+        grid-gap: 20px;
+      }
+
+      .color-blob {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  }
+}
+
 // .color-wall {
 //   border: 5px solid green;
 //   height: 100vh;
@@ -12,10 +94,9 @@
 //     height: 8vw;
 //     margin-bottom: 2rem;
 //     border: 1px solid pink;
-    
+
 //     &:hover {
 //       cursor: copy;
 //     }
 //   }
 // }
-
