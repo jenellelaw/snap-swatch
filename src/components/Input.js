@@ -1,11 +1,9 @@
-import React from 'react';
+import React from "react";
 
 const Input = ({ name, placeholder, value, handleChange }) => {
   return (
     <div>
-      <label
-        htmlFor={name}
-        className="visuallyHidden">
+      <label htmlFor={name} className="visuallyHidden">
         {placeholder}
       </label>
       <input
@@ -17,7 +15,7 @@ const Input = ({ name, placeholder, value, handleChange }) => {
         onChange={handleChange}
       />
     </div>
-  )
-}
+  );
+};
 
 export default Input;
