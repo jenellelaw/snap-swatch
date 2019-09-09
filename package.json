@@ -2,6 +2,7 @@
   "name": "jenelle-law-project5",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://jenellelaw.github.io/jenelle-law-project-5/",
   "dependencies": {
     "animate.css-react": "^0.1.0",
     "autoprefixer": "^9.6.1",
