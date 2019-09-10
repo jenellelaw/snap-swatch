@@ -3,6 +3,7 @@ import uuidv4 from "uuid";
 import Input from "./Input";
 import GeneratedSwatch from "./GeneratedSwatch";
 import AddedSwatch from "./AddedSwatch";
+import { Animated } from "react-animated-css";
 
 const Results = ({
   resetSearch,
@@ -21,65 +22,73 @@ const Results = ({
   resetError
 }) => {
   return (
-    <section className="results">
-      <div className="results-panel results-left">
-        <div className="image-container">
-          <img src={enteredImageURL} alt="" />
-        </div>
-        <button className="reset-btn" onClick={resetSearch}>
-          {isTablet || isSmallTablet || isPhone ? (
-            <span>&#8592;</span>
-          ) : (
-            "reset image"
-          )}
-        </button>
-      </div>
-      <div className="results-panel results-right">
-        <p className="results-heading">Add up to six colors</p>
-        <ul className="current-palette-container">
-          {generatedPalette.map(paletteColor => {
-            return (
-              <GeneratedSwatch
-                key={uuidv4()}
-                hexCode={paletteColor.color}
-                colorName={paletteColor.label}
-                addColor={addColor}
-                removeColor={removeColor}
-                customPalette={customPalette}
-              />
-            );
-          })}
-        </ul>
-      </div>
-      <div className="results-panel results-bottom">
-        <p className="results-heading your-palette">Your palette</p>
-        {swatchError && resetError()}
-        <ul className="custom-palette">
-          {customPalette.map(swatch => {
-            return (
-              <AddedSwatch
-                key={uuidv4()}
-                hexCode={swatch}
-                removeColor={removeColor}
-              />
-            );
-          })}
-        </ul>
-        <form onSubmit={e => savePalette(e)}>
-          <Input
-            placeholder={
-              isTablet || isPhone ? "palette name" : "name your palette"
-            }
-            name="paletteName"
-            value={paletteName}
-            handleChange={handleChange}
-          />
-          <button className="save-palette">
-            {isTablet || isPhone ? "save palette!" : "save to The Color Wall!"}
+    <Animated
+      className="animated-wrapper"
+      animationIn="fadeInUp"
+      animationInDuration="800"
+    >
+      <section className="results">
+        <div className="results-panel results-left">
+          <div className="image-container">
+            <img src={enteredImageURL} alt="" />
+          </div>
+          <button className="reset-btn" onClick={resetSearch}>
+            {isTablet || isSmallTablet || isPhone ? (
+              <span>&#8592;</span>
+            ) : (
+              "reset image"
+            )}
           </button>
-        </form>
-      </div>
-    </section>
+        </div>
+        <div className="results-panel results-right">
+          <p className="results-heading">Add up to six colors</p>
+          <ul className="current-palette-container">
+            {generatedPalette.map(paletteColor => {
+              return (
+                <GeneratedSwatch
+                  key={uuidv4()}
+                  hexCode={paletteColor.color}
+                  colorName={paletteColor.label}
+                  addColor={addColor}
+                  removeColor={removeColor}
+                  customPalette={customPalette}
+                />
+              );
+            })}
+          </ul>
+        </div>
+        <div className="results-panel results-bottom">
+          <p className="results-heading your-palette">Your palette</p>
+          {swatchError && resetError()}
+          <ul className="custom-palette">
+            {customPalette.map(swatch => {
+              return (
+                <AddedSwatch
+                  key={uuidv4()}
+                  hexCode={swatch}
+                  removeColor={removeColor}
+                />
+              );
+            })}
+          </ul>
+          <form onSubmit={e => savePalette(e)}>
+            <Input
+              placeholder={
+                isTablet || isPhone ? "palette name" : "name your palette"
+              }
+              name="paletteName"
+              value={paletteName}
+              handleChange={handleChange}
+            />
+            <button className="save-palette">
+              {isTablet || isPhone
+                ? "save palette!"
+                : "save to The Color Wall!"}
+            </button>
+          </form>
+        </div>
+      </section>
+    </Animated>
   );
 };
 

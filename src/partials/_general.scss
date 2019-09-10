@@ -1,7 +1,13 @@
 body {
-  background: red;
+  background: $black;
   color: $white;
   font-family: "Space Mono", monospace;
+}
+
+.empty-input.enter-image-url {
+  background: blue;
+  width: 50%;
+  height: 50%;
 }
 
 .App {
@@ -21,6 +27,20 @@ body {
   }
 }
 
+.search-alert {
+  background: red;
+}
+
+.animated {
+  &-wrapper {
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+}
+
 .palette-generator {
   position: relative;
   width: 100%;
@@ -29,6 +49,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 
   @media (max-width: 500px) {
     padding-top: 25px;
@@ -65,26 +86,26 @@ body {
       background: $white;
     }
   }
-}
 
-h1 {
-  position: absolute;
-  z-index: 10;
-  top: -2.5rem;
-  background: $white;
-  padding: 0.6rem 2rem 0.9rem;
-  display: inline-block;
-  font-size: 3.6rem;
+  h1 {
+    position: absolute;
+    z-index: 200;
+    top: -2.5rem;
+    background: $white;
+    padding: 0.6rem 2rem 0.9rem;
+    display: inline-block;
+    font-size: 3.6rem;
 
-  a {
-    line-height: 1;
-    color: $black;
-    text-align: center;
-    text-decoration: none;
-  }
+    a {
+      line-height: 1;
+      color: $black;
+      text-align: center;
+      text-decoration: none;
+    }
 
-  @media (max-width: 1280px) {
-    font-size: calc(2rem + (36 - 20) * (100vw - 320px) / (1280 - 320));
+    @media (max-width: 1280px) {
+      font-size: calc(2rem + (36 - 20) * (100vw - 320px) / (1280 - 320));
+    }
   }
 }
 

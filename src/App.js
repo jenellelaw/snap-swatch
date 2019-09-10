@@ -6,6 +6,9 @@ import "./partials/App.scss";
 import Qs from "qs";
 import axios from "axios";
 import firebase from "./firebase";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+// import { Animated } from "react-animated-css";
 
 class App extends Component {
   constructor() {
@@ -77,9 +80,16 @@ class App extends Component {
 
   getColors = e => {
     e.preventDefault();
+    const MySwal = withReactContent(Swal);
 
     if (!this.state.enteredImageURL) {
-      return alert("Please enter a URL");
+      return Swal.fire({
+        title: "Please enter a image URL",
+        animation: false,
+        customClass: {
+          popup: "animated bounceIn empty-input enter-image-url"
+        }
+      });
     }
 
     this.setState({
@@ -87,7 +97,7 @@ class App extends Component {
     });
 
     axios({
-      url: "http://proxy.hackeryou.com",
+      url: "https://proxy.hackeryou.com",
       dataResponse: "json",
       paramsSerializer: function(params) {
         return Qs.stringify(params, { arrayFormat: "brackets" });
@@ -227,8 +237,20 @@ class App extends Component {
               <a href="App.js">SnapSwatch</a>
             </h1>
 
+            {apiDataLoading && (
+              <div className="loader">
+                <div className="load">
+                  <hr />
+                  <hr />
+                  <hr />
+                  <hr />
+                </div>
+              </div>
+            )}
+
             {this.state.showSearch ? (
               <Search
+                appear="fadeInRight"
                 getColors={getColors}
                 value={enteredImageURL}
                 handleChange={handleChange}
@@ -257,14 +279,14 @@ class App extends Component {
             </p>
           </div>
 
-          {(showSearch || isPhone) && (
+          {(showSearch || !isPhone) && (
             <p className="side-text colorwall-directions">
               {isSmallTablet ? (
                 <span className="down-arrow">&#8595;</span>
               ) : (
                 <span>&#8592;</span>
               )}
-              The ColorWall
+              The Color Wall
             </p>
           )}
         </div>
