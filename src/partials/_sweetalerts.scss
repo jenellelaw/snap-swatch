@@ -1,5 +1,101 @@
-.empty-input.enter-image-url {
-  background: blue;
-  width: 50%;
-  height: 50%;
+.custom-alert-style {
+  // shared styles
+  &.container {
+    width: 30vw;
+    min-width: 330px;
+    height: 18vw;
+    min-height: 240px;
+    border-radius: 0;
+  }
+  &.title-class {
+    padding: 5px 20px;
+    font-size: 2.2rem;
+
+    @media (max-width: 480px) {
+      font-size: 2rem;
+      width: 250px;
+    }
+  }
+
+  // styles for empty field-related alerts
+
+  &.empty-field {
+    &.container {
+      background: pink;
+    }
+
+    &.title-class {
+      color: $black;
+    }
+  }
+
+  // styles for no results-related alerts
+
+  &.no-results {
+    &.container {
+      background: $blue;
+      width: 300px;
+    }
+
+    &.title-class {
+      color: $white;
+    }
+  }
+
+  // styles for too many swatches alerts
+  &.over-limit {
+    &.container {
+      background: mediumaquamarine;
+    }
+
+    &.title-class {
+      color: $black;
+    }
+  }
+
+  // styles for palette saving success alert
+  &.saved-palette {
+    &.container {
+      background: $teal;
+      min-width: 500px;
+
+      @media (max-width: 480px) {
+        width: 100%;
+        min-width: auto;
+      }
+    }
+
+    &.title-class {
+      color: $black;
+      width: 80%;
+    }
+
+    &.confirm-button-class {
+      width: 350px;
+
+      @media (max-width: 480px) {
+        min-width: 80%;
+      }
+    }
+  }
+}
+
+.swal2-styled.swal2-confirm.confirm-button-class {
+  font-family: "Space Mono", monospace;
+  font-weight: bold;
+  font-size: 2rem;
+  margin-top: 0;
+  background: lighten($black, 10%);
+  box-shadow: none;
+  color: $white;
+  border-radius: 50px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: $black;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.8rem;
+  }
 }

@@ -90,11 +90,14 @@ class App extends Component {
     const MySwal = withReactContent(Swal);
 
     if (!this.state.enteredImageURL) {
-      return Swal.fire({
-        title: "Please enter a image URL",
+      return MySwal.fire({
+        title: "Please enter an image URL",
+        confirmButtonText: "Got it!",
         animation: false,
         customClass: {
-          popup: "animated bounceIn empty-input enter-image-url"
+          popup: "animated bounceIn custom-alert-style empty-field container",
+          title: "custom-alert-style empty-field title-class",
+          confirmButton: "custom-alert-style empty-field confirm-button-class"
         }
       });
     }
@@ -132,7 +135,16 @@ class App extends Component {
         });
       })
       .catch(error => {
-        alert("No results found. Please try again.");
+        MySwal.fire({
+          title: "No results found. Please try another URL.",
+          confirmButtonText: "Got it!",
+          animation: false,
+          customClass: {
+            popup: "animated bounceIn custom-alert-style no-results container",
+            title: "custom-alert-style no-results title-class",
+            confirmButton: "custom-alert-style no-results confirm-button-class"
+          }
+        });
       })
       .finally(() => {
         this.setState({
@@ -161,7 +173,19 @@ class App extends Component {
   };
 
   resetError = () => {
-    alert("no more!");
+    const MySwal = withReactContent(Swal);
+
+    MySwal.fire({
+      title: "No more than 6 swatches!",
+      confirmButtonText: "Awww ok.",
+      animation: false,
+      customClass: {
+        popup: "animated bounceIn custom-alert-style over-limit container",
+        title: "custom-alert-style over-limit title-class",
+        confirmButton: "custom-alert-style over-limit confirm-button-class"
+      }
+    });
+
     this.setState({
       swatchError: false
     });
@@ -178,15 +202,46 @@ class App extends Component {
 
   savePalette = e => {
     e.preventDefault();
-
+    const MySwal = withReactContent(Swal);
     const { enteredImageURL, paletteName, customPalette } = this.state;
 
+    if (!paletteName && customPalette.length < 3) {
+      return MySwal.fire({
+        title: "Give your palette a name and choose at least 3 colors!",
+        confirmButtonText: "Got it!",
+        animation: false,
+        customClass: {
+          popup: "animated bounceIn custom-alert-style empty-field container",
+          title: "custom-alert-style empty-field title-class",
+          confirmButton: "custom-alert-style empty-field confirm-button-class"
+        }
+      });
+    }
+
     if (!paletteName) {
-      return alert("please type in a name");
+      return MySwal.fire({
+        title: "Give your palette a name!",
+        confirmButtonText: "Got it!",
+        animation: false,
+        customClass: {
+          popup: "animated bounceIn custom-alert-style empty-field container",
+          title: "custom-alert-style empty-field title-class",
+          confirmButton: "custom-alert-style empty-field confirm-button-class"
+        }
+      });
     }
 
     if (customPalette.length < 3) {
-      return alert("please choose at least 3 colors ");
+      return MySwal.fire({
+        title: "Please choose at least 3 colors!",
+        confirmButtonText: "Got it!",
+        animation: false,
+        customClass: {
+          popup: "animated bounceIn custom-alert-style empty-field container",
+          title: "custom-alert-style empty-field title-class",
+          confirmButton: "custom-alert-style empty-field confirm-button-class"
+        }
+      });
     }
 
     const dbRef = firebase.database().ref();
@@ -198,7 +253,17 @@ class App extends Component {
     };
 
     dbRef.push(newPalette);
-    alert("palette has been saved");
+
+    MySwal.fire({
+      title: "Yay! Your palette has been saved.",
+      confirmButtonText: "Cool, imma see it on the Color Wall now!",
+      animation: false,
+      customClass: {
+        popup: "animated bounceIn custom-alert-style saved-palette container",
+        title: "custom-alert-style saved-palette title-class",
+        confirmButton: "custom-alert-style saved-palette confirm-button-class"
+      }
+    });
   };
 
   resetSearch = () => {

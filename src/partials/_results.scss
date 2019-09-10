@@ -4,6 +4,7 @@
   width: 90%;
   height: 88%;
   animation-duration: 800;
+  animation-delay: 200;
 
   display: grid;
   grid-gap: 40px 30px;
@@ -91,8 +92,8 @@
   }
 
   .color-blob {
-    width: 60px;
-    height: 60px;
+    width: 68px;
+    height: 68px;
   }
 
   &-left {
@@ -161,7 +162,8 @@
 
     .current-palette-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      grid-gap: 10px;
       justify-items: space-between;
       align-items: center;
       max-height: 320px;
@@ -169,10 +171,6 @@
       overflow-y: auto;
       color: $black;
       text-align: center;
-
-      @media (max-width: 768px) {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      }
 
       @media (max-width: 480px) {
         padding: 0;
@@ -182,19 +180,28 @@
       }
 
       .swatch {
-        margin: 10px 0;
+        padding: 10px;
+        border: 2px solid transparent;
 
-        @media (max-width: 480px) {
-          min-width: 120px;
+        .color-blob {
+          animation: transform 10s ease-in-out infinite both;
+          margin: 0 auto 1rem;
+
+          &:hover {
+            cursor: cell;
+          }
+        }
+
+        &:nth-child(2n) {
+          .color-blob {
+            animation: transform 15s ease-in-out infinite alternate;
+          }
         }
       }
 
-      .color-blob {
-        margin: 0 auto 1rem;
-      }
-
       .selected-swatch {
-        border: 1px solid $teal;
+        background: $white;
+        border: 2px solid $teal;
       }
 
       p {
@@ -235,6 +242,21 @@
       min-height: 70px;
       display: flex;
       justify-content: center;
+
+      .color-blob {
+        margin: auto 10px;
+        animation: transform 10s ease-in-out infinite both;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &:nth-child(2n) {
+          .color-blob {
+            animation: transform 15s ease-in-out infinite alternate;
+          }
+        }
+      }
 
       @media (max-width: 768px) {
         margin-top: -18px;
@@ -322,5 +344,30 @@
         }
       }
     }
+  }
+}
+
+@keyframes transform {
+  0%,
+  100% {
+    border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+  }
+  14% {
+    border-radius: 40% 60% 54% 46% / 49% 60% 40% 51%;
+  }
+  28% {
+    border-radius: 54% 46% 38% 62% / 49% 70% 30% 51%;
+  }
+  42% {
+    border-radius: 61% 39% 55% 45% / 61% 38% 62% 39%;
+  }
+  56% {
+    border-radius: 61% 39% 67% 33% / 70% 50% 50% 30%;
+  }
+  70% {
+    border-radius: 50% 50% 34% 66% / 56% 68% 32% 44%;
+  }
+  84% {
+    border-radius: 46% 54% 50% 50% / 35% 61% 39% 65%;
   }
 }

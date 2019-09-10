@@ -11,9 +11,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /*change these sizes to fit into your project*/
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
 }
 .load hr {
   border: 0;
@@ -26,19 +25,19 @@
 }
 
 .load :first-child {
-  background: #19a68c;
+  background: $blue;
   animation-delay: -1.5s;
 }
 .load :nth-child(2) {
-  background: #f63d3a;
+  background: $orange;
   animation-delay: -1s;
 }
 .load :nth-child(3) {
-  background: #fda543;
+  background: $teal;
   animation-delay: -0.5s;
 }
 .load :last-child {
-  background: #193b48;
+  background: pink;
 }
 
 @keyframes spin {

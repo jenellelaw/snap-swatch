@@ -17,6 +17,7 @@ class SubmittedSwatch extends Component {
       <li
         style={{ background: this.props.hexCode }}
         className="color-blob swatch swatch-submitted"
+        title="click to copy swatch hexcode"
         onClick={this.clickToCopy}
       >
         <CopyText text={this.state.textToCopy}></CopyText>

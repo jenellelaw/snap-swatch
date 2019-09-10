@@ -21,17 +21,25 @@
     @media (max-width: 1280px) {
       font-size: calc(1.8rem + (2 - 1.8) * (100vw - 320px) / (1280 - 320));
     }
+
+    @media (max-width: 768px) {
+      margin-bottom: 15vw;
+    }
   }
 
   .submissions {
     columns: 4 320px;
-    column-gap: 50px;
+    column-gap: 40px;
     text-align: center;
+
+    @media (max-width: 1240px) {
+      columns: 4 250px;
+    }
 
     .submission {
       background: $white;
       padding: 30px;
-      margin: 0 1rem 50px 0;
+      margin: 0 0 40px;
       display: inline-block;
       width: 100%;
 
@@ -43,8 +51,6 @@
         padding: 0.5rem 2rem 0.75rem;
         margin: 0 0 20px;
         display: inline-block;
-        // position: absolute;
-        // top: 10px;
       }
 
       .image-container {
@@ -69,8 +75,27 @@
       }
 
       .color-blob {
-        width: 60px;
-        height: 60px;
+        width: 4.5vw;
+        height: 4.5vw;
+        animation: transform 10s ease-in-out infinite both;
+
+        &:nth-child(2n) {
+          animation: transform 15s ease-in-out infinite alternate;
+        }
+
+        &:hover {
+          cursor: cell;
+        }
+
+        @media (max-width: 1004px) {
+          width: 6vw;
+          height: 6vw;
+        }
+
+        @media (max-width: 635px) {
+          width: 15vw;
+          height: 15vw;
+        }
       }
     }
   }
