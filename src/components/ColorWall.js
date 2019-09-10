@@ -4,7 +4,7 @@ import SubmittedSwatch from "./SubmittedSwatch";
 
 const ColorWall = ({ submissions }) => {
   return (
-    <section className="color-wall">
+    <section className="color-wall" id="colorWall">
       <div className="wrapper">
         <h2>The ColorWall</h2>
         <h3>our palette treasure trove</h3>

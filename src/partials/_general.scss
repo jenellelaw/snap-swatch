@@ -2,18 +2,7 @@ body {
   background: $black;
   color: $white;
   font-family: "Space Mono", monospace;
-}
-
-.empty-input.enter-image-url {
-  background: blue;
-  width: 50%;
-  height: 50%;
-}
-
-.App {
-  &.loading {
-    background: red;
-  }
+  overflow-x: hidden;
 }
 
 .wrapper {
@@ -49,7 +38,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-x: hidden;
 
   @media (max-width: 500px) {
     padding-top: 25px;
@@ -95,6 +84,7 @@ body {
     padding: 0.6rem 2rem 0.9rem;
     display: inline-block;
     font-size: 3.6rem;
+    animation-delay: 1s;
 
     a {
       line-height: 1;
@@ -109,13 +99,21 @@ body {
   }
 }
 
-.side-text {
+.outside-text {
   position: absolute;
   line-height: 0;
 
   &.credits {
     font-size: 1.6rem;
     bottom: -40px;
+    transform: scale(1);
+    transition: transform 0.1s;
+    cursor: pointer;
+
+    &:active {
+      color: $teal;
+      transform: scale(1.05);
+    }
 
     @media (max-width: 600px) {
       bottom: -25px;
@@ -126,12 +124,19 @@ body {
     }
   }
 
-  &.colorwall-directions {
+  &.colorwall-link {
+    color: $white;
+    text-decoration: none;
     font-size: 1.8rem;
     letter-spacing: 1px;
     transform: rotate(-90deg);
-    bottom: 110px;
+    bottom: 134px;
     left: -60px;
+    transition: all 0.25s;
+
+    &:hover {
+      color: $teal;
+    }
 
     span {
       font-size: 4rem;
