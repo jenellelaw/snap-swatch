@@ -2,7 +2,7 @@ body {
   background: $black;
   color: $white;
   font-family: "Space Mono", monospace;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }
 
 .wrapper {
@@ -14,10 +14,6 @@ body {
   @media (max-width: 600px) {
     width: 90%;
   }
-}
-
-.search-alert {
-  background: red;
 }
 
 .animated {
@@ -79,18 +75,27 @@ body {
   h1 {
     position: absolute;
     z-index: 200;
-    top: -2.5rem;
+    top: -30px;
     background: $white;
     padding: 0.6rem 2rem 0.9rem;
     display: inline-block;
     font-size: 3.6rem;
     animation-delay: 1s;
+    transition: all 1s;
 
     a {
       line-height: 1;
       color: $black;
       text-align: center;
       text-decoration: none;
+
+      &:focus {
+        color: $blue;
+      }
+
+      &:active {
+        color: $teal;
+      }
     }
 
     @media (max-width: 1280px) {

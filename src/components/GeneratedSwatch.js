@@ -18,25 +18,28 @@ class GeneratedSwatch extends Component {
       customPalette
     } = this.props;
 
+    const colorAlreadyExists = customPalette.some(obj => {
+      return obj.hexCode === hexCode;
+    });
+
     const isSelected = `swatch swatch-generated selected-swatch`;
     const notSelected = `swatch swatch-generated`;
 
-    const selectedStatus = customPalette.includes(hexCode)
-      ? isSelected
-      : notSelected;
-
     return (
       <li
-        className={selectedStatus}
+        className={colorAlreadyExists ? isSelected : notSelected}
+        title="Add this color"
         onClick={() =>
-          customPalette.includes(hexCode)
+          colorAlreadyExists
             ? removeColor(hexCode)
-            : addColor(hexCode)
+            : addColor(hexCode, colorName)
         }
       >
-        <div className="color-blob" style={{ background: hexCode }}></div>
-        <p className="color-name">{colorName}</p>
-        <p className="hex-code">{hexCode}</p>
+        <button>
+          <div className="color-blob" style={{ background: hexCode }}></div>
+          <p className="color-name">{colorName}</p>
+          <p className="hex-code">{hexCode}</p>
+        </button>
       </li>
     );
   }

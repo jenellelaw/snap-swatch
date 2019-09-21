@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import Search from "./components/Search";
-import Results from "./components/Results";
-import ColorWall from "./components/ColorWall";
-import "./partials/App.scss";
 import Qs from "qs";
 import axios from "axios";
 import firebase from "./firebase";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import CopyText from "react-copy-text";
+import Background from "./components/Background";
+import Search from "./components/Search";
+import Loader from "./components/Loader";
+import Results from "./components/Results";
+import ColorWall from "./components/ColorWall";
+import "./partials/App.scss";
 
 class App extends Component {
   constructor() {
@@ -38,8 +40,7 @@ class App extends Component {
     window.addEventListener("resize", this.calculateScreenIfSmallTablet);
     window.addEventListener("resize", this.calculateScreenIfPhone);
 
-    //Storing Firebase data in our state object
-
+    // Get Color Wall data from Firebase
     const dbRef = firebase.database().ref();
 
     dbRef.on("value", response => {
@@ -89,6 +90,8 @@ class App extends Component {
     e.preventDefault();
     const MySwal = withReactContent(Swal);
 
+    window.scrollTo(0, 0);
+
     if (!this.state.enteredImageURL) {
       return MySwal.fire({
         title: "Please enter an image URL",
@@ -127,8 +130,6 @@ class App extends Component {
       }
     })
       .then(res => {
-        console.log(res);
-
         this.setState({
           showSearch: false,
           generatedPalette: res.data.tags
@@ -159,14 +160,22 @@ class App extends Component {
     });
   };
 
-  addColor = hexCode => {
+  addColor = (hexCode, colorName) => {
+    const colorAlreadyExists = this.state.customPalette.some(obj => {
+      return obj.hexCode === hexCode;
+    });
+
+    if (colorAlreadyExists) {
+      return;
+    }
+
     if (this.state.customPalette.length === 6) {
       this.setState({
         swatchError: true
       });
     } else {
       this.setState(prevState => ({
-        customPalette: [...prevState.customPalette, hexCode],
+        customPalette: [...prevState.customPalette, { hexCode, colorName }],
         swatchError: false
       }));
     }
@@ -195,7 +204,7 @@ class App extends Component {
     this.setState(prevState => ({
       swatchError: false,
       customPalette: prevState.customPalette.filter(item => {
-        return item !== hexCode;
+        return item.hexCode !== hexCode;
       })
     }));
   };
@@ -246,9 +255,15 @@ class App extends Component {
 
     const dbRef = firebase.database().ref();
 
+    const formattedPaletteName = paletteName
+      .toLowerCase()
+      .split(" ")
+      .map(s => s.charAt(0).toUpperCase() + s.substring(1))
+      .join(" ");
+
     const newPalette = {
       image: enteredImageURL,
-      paletteName: paletteName,
+      paletteName: formattedPaletteName,
       paletteColors: customPalette
     };
 
@@ -304,57 +319,15 @@ class App extends Component {
     } = this;
 
     return (
-      <div className={apiDataLoading ? "App loading" : "App"}>
-        <svg
-          className="background-blob blob-1"
-          xmlns="http://www.w3.org/2000/svg"
-          width="600"
-          height="600"
-          viewBox="0 0 600 600"
-        >
-          <path d="M477.2 201.2C504.4 244.7 483.6 319.3 446.1 379 408.5 438.7 354.3 483.3 293.8 486.9 233.3 490.5 166.6 453 139.9 399.6 113.2 346.2 126.5 276.8 159.8 229.8 193.2 182.7 246.6 157.8 310.8 151.6 375.1 145.3 450.1 157.7 477.2 201.2Z" />
-        </svg>
-        <svg
-          className="background-blob blob-2"
-          xmlns="http://www.w3.org/2000/svg"
-          width="600"
-          height="600"
-          viewBox="0 0 600 600"
-        >
-          <path d="M480.8 168.7C524.5 210.6 543.4 285.2 528.9 353.7 514.5 422.2 466.7 484.5 409.7 502.2 352.6 519.8 286.4 492.8 237.5 458.3 188.6 423.8 157 381.8 142.2 331.7 127.4 281.7 129.2 223.5 158.3 184.9 187.4 146.2 243.7 127.1 306.1 122.2 368.5 117.3 437.1 126.7 480.8 168.7Z" />
-        </svg>
-        <svg
-          className="background-blob blob-3"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 310 350"
-        >
-          <path d="M156.4,339.5c31.8-2.5,59.4-26.8,80.2-48.5c28.3-29.5,40.5-47,56.1-85.1c14-34.3,20.7-75.6,2.3-111  c-18.1-34.8-55.7-58-90.4-72.3c-11.7-4.8-24.1-8.8-36.8-11.5l-0.9-0.9l-0.6,0.6c-27.7-5.8-56.6-6-82.4,3c-38.8,13.6-64,48.8-66.8,90.3c-3,43.9,17.8,88.3,33.7,128.8c5.3,13.5,10.4,27.1,14.9,40.9C77.5,309.9,111,343,156.4,339.5z" />
-        </svg>
-        <svg
-          className="background-blob blob-4"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 310 350"
-        >
-          <path d="M156.4,339.5c31.8-2.5,59.4-26.8,80.2-48.5c28.3-29.5,40.5-47,56.1-85.1c14-34.3,20.7-75.6,2.3-111  c-18.1-34.8-55.7-58-90.4-72.3c-11.7-4.8-24.1-8.8-36.8-11.5l-0.9-0.9l-0.6,0.6c-27.7-5.8-56.6-6-82.4,3c-38.8,13.6-64,48.8-66.8,90.3c-3,43.9,17.8,88.3,33.7,128.8c5.3,13.5,10.4,27.1,14.9,40.9C77.5,309.9,111,343,156.4,339.5z" />
-        </svg>
+      <div className="App">
+        <Background />
         <div className="palette-generator">
           <div className={showSearch ? "wrapper" : "wrapper white-bg"}>
             <h1 className="animated bounceIn">
               <a href="App.js">SnapSwatch</a>
             </h1>
 
-            {apiDataLoading && (
-              <div className="loader">
-                <div className="load">
-                  <hr />
-                  <hr />
-                  <hr />
-                  <hr />
-                </div>
-              </div>
-            )}
+            {apiDataLoading && <Loader />}
 
             {this.state.showSearch ? (
               <Search

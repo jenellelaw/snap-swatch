@@ -13,14 +13,20 @@ class SubmittedSwatch extends Component {
   clickToCopy = () => this.setState({ textToCopy: this.props.hexCode });
 
   render() {
+    const { hexCode, colorName } = this.props;
+
     return (
       <li
-        style={{ background: this.props.hexCode }}
-        className="color-blob swatch swatch-submitted"
-        title="click to copy swatch hexcode"
+        className="submitted-swatch"
+        title="Copy hexcode"
         onClick={this.clickToCopy}
       >
-        <CopyText text={this.state.textToCopy}></CopyText>
+        <button>
+          <div style={{ background: hexCode }} className="color-blob"></div>
+          <p>{colorName}</p>
+
+          <CopyText text={this.state.textToCopy}></CopyText>
+        </button>
       </li>
     );
   }

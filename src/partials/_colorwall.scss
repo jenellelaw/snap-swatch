@@ -12,7 +12,7 @@
   }
 
   h3 {
-    margin: 15px 0 90px;
+    margin: 15px auto 90px;
     font-size: 2rem;
     font-weight: 400;
     line-height: 1.2;
@@ -25,15 +25,22 @@
     @media (max-width: 768px) {
       margin-bottom: 15vw;
     }
+
+    @media (max-width: 480px) {
+      width: 80%;
+    }
   }
 
   .submissions {
-    columns: 4 320px;
+    columns: 3 320px;
     column-gap: 40px;
-    text-align: center;
 
-    @media (max-width: 1240px) {
-      columns: 4 250px;
+    @media (max-width: 800px) {
+      columns: 2 200px;
+    }
+
+    @media (max-width: 682px) {
+      columns: 1 300px;
     }
 
     .submission {
@@ -49,7 +56,8 @@
         color: $white;
         background: $black;
         padding: 0.5rem 2rem 0.75rem;
-        margin: 0 0 20px;
+        margin: 0 auto 20px;
+        text-align: center;
         display: inline-block;
       }
 
@@ -65,36 +73,62 @@
       }
 
       .submitted-swatches {
-        width: 80%;
-        margin: 0 auto 30px;
+        width: 100%;
+        margin: 0 0 30px;
+
         display: grid;
-        grid-template-rows: repeat(2, 1fr);
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         justify-items: center;
-        grid-gap: 20px;
+        grid-gap: 10px 10px;
+
+        @media (max-width: 682px) {
+          grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        }
       }
 
-      .color-blob {
-        width: 4.5vw;
-        height: 4.5vw;
-        animation: transform 10s ease-in-out infinite both;
+      .submitted-swatch {
+        button {
+          background: none;
+          border-radius: 0;
+          padding: 10px 20px;
+          border: 2px solid transparent;
+          transition: all 0.2s;
 
+          &:focus {
+            border-color: lighten($darkgrey, 20%);
+            box-shadow: 0px 0px 20px -10px rgba(0, 0, 0, 0.7);
+          }
+
+          &:active .color-blob {
+            transform: scale(1.25);
+          }
+        }
+
+        .color-blob {
+          width: 65px;
+          height: 65px;
+          margin: 0 auto;
+          box-shadow: 0px 0px 20px -10px rgba(0, 0, 0, 0.7);
+          animation: swatchblobtransform 12s ease-in-out infinite both;
+          transform: scale(1);
+          transition: all 0.2s ease;
+
+          &:hover {
+            cursor: cell;
+          }
+        }
         &:nth-child(2n) {
-          animation: transform 15s ease-in-out infinite alternate;
+          .color-blob {
+            animation: swatchblobtransform 15s ease-in-out infinite reverse both;
+          }
         }
 
-        &:hover {
-          cursor: cell;
-        }
-
-        @media (max-width: 1004px) {
-          width: 6vw;
-          height: 6vw;
-        }
-
-        @media (max-width: 635px) {
-          width: 15vw;
-          height: 15vw;
+        p {
+          color: $darkgrey;
+          font-weight: bold;
+          font-size: 1.3rem;
+          margin-top: 10px;
+          text-align: center;
         }
       }
     }

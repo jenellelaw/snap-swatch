@@ -45,7 +45,7 @@
   // styles for too many swatches alerts
   &.over-limit {
     &.container {
-      background: mediumaquamarine;
+      background: lighten($orange, 3%);
     }
 
     &.title-class {
@@ -56,7 +56,7 @@
   // styles for palette saving success alert
   &.saved-palette {
     &.container {
-      background: $teal;
+      background: lighten($teal, 10%);
       min-width: 500px;
 
       @media (max-width: 480px) {
@@ -89,10 +89,19 @@
   box-shadow: none;
   color: $white;
   border-radius: 50px;
+  transform: scale(1);
   transition: all 0.2s;
 
+  &:focus {
+    background: $blue;
+    transform: scale(1.05);
+    box-shadow: 5px 5px 30px -10px rgba(0, 0, 0, 0.6);
+  }
+
   &:hover {
-    background: $black;
+    color: $black;
+    background: lighten($teal, 10%);
+    transform: scale(1.05);
   }
 
   @media (max-width: 480px) {

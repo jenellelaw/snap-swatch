@@ -1,6 +1,6 @@
 import React from "react";
 
-const AddedSwatch = ({ colorName, removeColor, hexCode }) => {
+const AddedSwatch = ({ removeColor, hexCode }) => {
   return (
     <li
       className="color-blob swatch swatch-added"

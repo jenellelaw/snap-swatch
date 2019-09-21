@@ -43,7 +43,8 @@
     @include form-child($grey, $white, $padding: 0.75rem 3.5rem 1rem);
     font-size: 1.6rem;
     font-weight: bold;
-    transition: all 0.1s;
+    transform: scale(1);
+    transition: all 0.2s;
 
     @media (max-width: 768px) {
       color: $white;
@@ -64,8 +65,10 @@
       left: -10px;
     }
 
-    &:hover {
-      background: $darkgrey;
+    &:hover,
+    &:focus {
+      background: darken($darkgrey, 5%);
+      transform: scale(1.05);
     }
   }
 
@@ -180,28 +183,55 @@
       }
 
       .swatch {
-        padding: 10px;
         border: 2px solid transparent;
 
+        button {
+          padding: 10px;
+          background: none;
+          width: 100%;
+          height: 100%;
+          border-radius: 12px;
+          transform: scale(1);
+          transition: transform 0.2s;
+
+          &:focus {
+            background: lighten(pink, 4%);
+            transform: scale(1.05);
+
+            .color-blob {
+              box-shadow: 5px 5px 31px -14px rgba(0, 0, 0, 0.56);
+            }
+          }
+
+          &:active {
+            background: lighten($teal, 30%);
+            transform: scale(1.05);
+          }
+        }
+
         .color-blob {
-          animation: transform 10s ease-in-out infinite both;
+          box-shadow: 3px 3px 20px -10px rgba(0, 0, 0, 0.3);
+          transform-origin: center center;
+          animation: swatchblobtransform 10s ease-in-out infinite both;
           margin: 0 auto 1rem;
 
           &:hover {
-            cursor: cell;
+            cursor: pointer;
           }
         }
 
         &:nth-child(2n) {
           .color-blob {
-            animation: transform 15s ease-in-out infinite alternate;
+            border-radius: 54% 46% 38% 62% / 49% 70% 30% 51%;
+            animation: swatchblobtransform 15s ease-in-out infinite reverse both;
           }
         }
       }
 
       .selected-swatch {
         background: $white;
-        border: 2px solid $teal;
+        border: 2.5px solid $teal;
+        border-radius: 10px;
       }
 
       p {
@@ -243,27 +273,24 @@
       display: flex;
       justify-content: center;
 
+      @media (max-width: 768px) {
+        margin-top: -18px;
+      }
+
       .color-blob {
         margin: auto 10px;
-        animation: transform 10s ease-in-out infinite both;
+        animation: swatchblobtransform 10s ease-in-out infinite both;
+        box-shadow: 3px 3px 20px -10px rgba(0, 0, 0, 0.3);
 
         &:hover {
           cursor: pointer;
         }
 
         &:nth-child(2n) {
-          .color-blob {
-            animation: transform 15s ease-in-out infinite alternate;
-          }
+          animation: swatchblobtransform 15s ease-in-out infinite reverse both;
         }
-      }
 
-      @media (max-width: 768px) {
-        margin-top: -18px;
-      }
-
-      @media (max-width: 600px) {
-        .color-blob {
+        @media (max-width: 600px) {
           margin: auto 5px;
           width: 30px;
           height: 30px;
@@ -319,6 +346,13 @@
             color: $darkgrey;
           }
 
+          &:focus {
+            background: lighten(pink, 5%);
+            &::placeholder {
+              color: $black;
+            }
+          }
+
           @media (max-width: 768px) {
             padding: 0.75rem 1.5rem;
           }
@@ -338,36 +372,12 @@
           flex-basis: 50%;
         }
 
-        &:hover {
+        &:hover,
+        &:focus {
           background: $teal;
           color: $black;
         }
       }
     }
-  }
-}
-
-@keyframes transform {
-  0%,
-  100% {
-    border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
-  }
-  14% {
-    border-radius: 40% 60% 54% 46% / 49% 60% 40% 51%;
-  }
-  28% {
-    border-radius: 54% 46% 38% 62% / 49% 70% 30% 51%;
-  }
-  42% {
-    border-radius: 61% 39% 55% 45% / 61% 38% 62% 39%;
-  }
-  56% {
-    border-radius: 61% 39% 67% 33% / 70% 50% 50% 30%;
-  }
-  70% {
-    border-radius: 50% 50% 34% 66% / 56% 68% 32% 44%;
-  }
-  84% {
-    border-radius: 46% 54% 50% 50% / 35% 61% 39% 65%;
   }
 }

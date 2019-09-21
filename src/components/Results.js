@@ -35,7 +35,7 @@ const Results = ({
         </button>
       </div>
       <div className="results-panel results-right">
-        <p className="results-heading">Add up to six colors</p>
+        <p className="results-heading">Add up to six colors to your palette</p>
         <ul className="current-palette-container">
           {generatedPalette.map(paletteColor => {
             return (
@@ -59,7 +59,7 @@ const Results = ({
             return (
               <AddedSwatch
                 key={uuidv4()}
-                hexCode={swatch}
+                hexCode={swatch.hexCode}
                 removeColor={removeColor}
               />
             );
@@ -75,7 +75,7 @@ const Results = ({
             handleChange={handleChange}
           />
           <button className="save-palette">
-            {isTablet || isPhone ? "save palette!" : "save to The Color Wall!"}
+            {isTablet || isPhone ? "save palette!" : "save to Color Wall"}
           </button>
         </form>
       </div>

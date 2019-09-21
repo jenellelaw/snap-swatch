@@ -30,9 +30,10 @@
     margin: 4rem 0 4.5rem;
     padding: 1.5rem 2.5rem 1.8rem;
     font-size: 2.4rem;
-
     line-height: 1;
     color: $blue;
+    transform: scale(1);
+    transition: all 0.2s ease;
 
     @media (max-width: 1280px) {
       font-size: calc(1.6rem + (24 - 16) * (100vw - 320px) / (1280 - 320));
@@ -47,16 +48,17 @@
     }
 
     &::selection {
-      background-color: $black;
+      background-color: $white;
     }
 
     &:focus {
-      background: $teal;
-      font-weight: bold;
-      color: $white;
+      transform: scale(1.05);
+      background: lighten(pink, 3%);
+      color: darken(pink, 70%);
+      box-shadow: 5px 5px 30px -10px rgba(0, 0, 0, 0.6);
 
       &::placeholder {
-        color: $white;
+        color: darken(pink, 70%);
       }
     }
   }
@@ -69,12 +71,15 @@
     transform: scale(1);
     transition: all 0.2s ease;
 
-    &:hover {
+    &:hover,
+    &:focus {
       transform: scale(1.05);
       background: $orange;
+      box-shadow: 5px 5px 30px -10px rgba(0, 0, 0, 0.6);
     }
 
     &:active {
+      background: $teal;
       transform: scale(1.15);
     }
 

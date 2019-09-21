@@ -7,14 +7,20 @@ const ColorWall = ({ submissions }) => {
     <section className="color-wall" id="colorWall">
       <div className="wrapper">
         <h2>The ColorWall</h2>
-        <h3>our palette treasure trove</h3>
+        <h3>click on the swatches to copy their hexcodes!</h3>
         <ul className="submissions">
           {submissions.map(submission => {
             return (
               <li key={uuidv4()} className="submission">
                 <ul className="submitted-swatches">
-                  {submission.paletteColors.map(color => {
-                    return <SubmittedSwatch key={uuidv4()} hexCode={color} />;
+                  {submission.paletteColors.map(obj => {
+                    return (
+                      <SubmittedSwatch
+                        key={uuidv4()}
+                        hexCode={obj.hexCode}
+                        colorName={obj.colorName}
+                      />
+                    );
                   })}
                 </ul>
                 <p className="submission-name">{submission.paletteName}</p>
