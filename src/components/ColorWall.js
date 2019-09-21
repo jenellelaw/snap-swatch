@@ -6,7 +6,7 @@ const ColorWall = ({ submissions }) => {
   return (
     <section className="color-wall" id="colorWall">
       <div className="wrapper">
-        <h2>The ColorWall</h2>
+        <h2 className="animated pulse infinite">The Color Wall</h2>
         <h3>click on the swatches to copy their hexcodes!</h3>
         <ul className="submissions">
           {submissions.map(submission => {
@@ -23,7 +23,9 @@ const ColorWall = ({ submissions }) => {
                     );
                   })}
                 </ul>
-                <p className="submission-name">{submission.paletteName}</p>
+                <div className="submission-name">
+                  <p>{submission.paletteName}</p>
+                </div>
                 <div className="image-container">
                   <img
                     className="submission-image"

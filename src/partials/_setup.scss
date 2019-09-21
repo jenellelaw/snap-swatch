@@ -177,6 +177,7 @@ input::-moz-focus-inner {
 
 html {
   font-size: 62.5%;
+  scroll-behavior: smooth;
 }
 
 h1,
@@ -208,6 +209,7 @@ button {
 }
 
 a {
+  text-decoration: none;
   outline: 0;
 }
 

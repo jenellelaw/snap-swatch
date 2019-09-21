@@ -1,16 +1,18 @@
 import React, { Component } from "react";
-import Qs from "qs";
-import axios from "axios";
-import firebase from "./firebase";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-import CopyText from "react-copy-text";
 import Background from "./components/Background";
 import Search from "./components/Search";
 import Loader from "./components/Loader";
 import Results from "./components/Results";
 import ColorWall from "./components/ColorWall";
+import ColorWallLink from "./components/ColorWallLink";
+import CreditText from "./components/CreditText";
 import "./partials/App.scss";
+
+import Qs from "qs";
+import axios from "axios";
+import firebase from "./firebase";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 class App extends Component {
   constructor() {
@@ -52,7 +54,7 @@ class App extends Component {
       }
 
       this.setState({
-        submissions: storedSubmissions
+        submissions: storedSubmissions.reverse()
       });
     });
   }
@@ -61,12 +63,6 @@ class App extends Component {
     window.removeEventListener("resize", this.calculateScreenIfTablet);
     window.removeEventListener("resize", this.calculateScreenIfSmallTablet);
   }
-
-  clickToCopy = () =>
-    this.setState({
-      textToCopy:
-        "https://cdn.pixabay.com/photo/2019/09/06/20/25/refuge-4457275_1280.jpg"
-    });
 
   calculateScreenIfTablet = () => {
     this.setState({
@@ -84,6 +80,27 @@ class App extends Component {
     this.setState({
       isPhone: window.innerWidth < 480
     });
+  };
+
+  getRandoImage = e => {
+    const API_KEY = process.env.REACT_APP_UNSPLASH_API_KEY;
+
+    axios
+      .get(
+        `https://api.unsplash.com/photos/random/?query=wallpapers&client_id=${API_KEY}`
+      )
+      .then(res => {
+        const enteredImageURL = res.data.urls.regular;
+
+        this.setState(
+          {
+            enteredImageURL
+          },
+          () => {
+            this.getColors(e);
+          }
+        );
+      });
   };
 
   getColors = e => {
@@ -109,6 +126,8 @@ class App extends Component {
       apiDataLoading: true
     });
 
+    const API_KEY = process.env.REACT_APP_COLORTAG_API_KEY;
+
     axios({
       url: "https://proxy.hackeryou.com",
       dataResponse: "json",
@@ -124,7 +143,7 @@ class App extends Component {
         },
         proxyHeaders: {
           "x-rapidapi-host": "apicloud-colortag.p.rapidapi.com",
-          "x-rapidapi-key": "a036396446msh88226c6849e787cp11ea84jsn3481ae1e567d"
+          "x-rapidapi-key": API_KEY
         },
         xmlToJSON: false
       }
@@ -143,7 +162,8 @@ class App extends Component {
           customClass: {
             popup: "animated bounceIn custom-alert-style no-results container",
             title: "custom-alert-style no-results title-class",
-            confirmButton: "custom-alert-style no-results confirm-button-class"
+            confirmButton:
+              "custom-alert-style no-results confirm-button-class got-it"
           }
         });
       })
@@ -271,13 +291,17 @@ class App extends Component {
 
     MySwal.fire({
       title: "Yay! Your palette has been saved.",
-      confirmButtonText: "Cool, imma see it on the Color Wall now!",
+      confirmButtonText: "See it on the Color Wall!",
       animation: false,
       customClass: {
         popup: "animated bounceIn custom-alert-style saved-palette container",
         title: "custom-alert-style saved-palette title-class",
         confirmButton: "custom-alert-style saved-palette confirm-button-class"
       }
+    }).then(() => {
+      window.location.href = "/#colorWall";
+
+      this.resetSearch();
     });
   };
 
@@ -303,8 +327,7 @@ class App extends Component {
       submissions,
       isTablet,
       isSmallTablet,
-      isPhone,
-      textToCopy
+      isPhone
     } = this.state;
 
     const {
@@ -315,7 +338,7 @@ class App extends Component {
       removeColor,
       savePalette,
       resetError,
-      clickToCopy
+      getRandoImage
     } = this;
 
     return (
@@ -335,6 +358,7 @@ class App extends Component {
                 getColors={getColors}
                 value={enteredImageURL}
                 handleChange={handleChange}
+                getRandoImage={getRandoImage}
               />
             ) : (
               <Results
@@ -354,25 +378,14 @@ class App extends Component {
                 resetError={resetError}
               />
             )}
-
-            <p className="outside-text credits">
-              <a onClick={clickToCopy} title="click for a image URL">
-                designed and coded by jenelle law
-              </a>
-              <CopyText text={textToCopy}></CopyText>
-            </p>
+            <CreditText />
           </div>
 
-          {(showSearch || !isPhone) && (
-            <a className="outside-text colorwall-link" href="#colorWall">
-              {isSmallTablet ? (
-                <span className="down-arrow">&#8595;</span>
-              ) : (
-                <span>&#8592;</span>
-              )}
-              The Color Wall
-            </a>
-          )}
+          <ColorWallLink
+            showSearch={showSearch}
+            isPhone={isPhone}
+            isSmallTablet={isSmallTablet}
+          />
         </div>
         <ColorWall submissions={submissions} />;
       </div>

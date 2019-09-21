@@ -2,7 +2,7 @@ import React from "react";
 import Input from "./Input";
 import { Animated } from "react-animated-css";
 
-const Search = ({ getColors, value, handleChange }) => {
+const Search = ({ getRandoImage, getColors, value, handleChange }) => {
   return (
     <Animated
       className="animated-wrapper"
@@ -30,12 +30,23 @@ const Search = ({ getColors, value, handleChange }) => {
               handleChange={handleChange}
             />
           </Animated>
+
           <Animated
+            className="btn-container"
             animationIn="fadeInUp"
             animationInDelay="1700"
             animationInDuration="800"
           >
-            <button className="generate-palette">generate palette!</button>
+            <button
+              type="button"
+              onClick={e => getRandoImage(e)}
+              className="rando-image"
+            >
+              get rando image
+            </button>
+            <button type="submit" className="generate-palette">
+              generate palette!
+            </button>
           </Animated>
         </form>
       </header>

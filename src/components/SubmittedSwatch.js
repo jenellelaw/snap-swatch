@@ -6,14 +6,30 @@ class SubmittedSwatch extends Component {
     super(props);
 
     this.state = {
-      textToCopy: ""
+      textToCopy: "",
+      textIsCopied: false
     };
   }
 
-  clickToCopy = () => this.setState({ textToCopy: this.props.hexCode });
+  clickToCopy = () => {
+    this.setState(
+      {
+        textToCopy: this.props.hexCode,
+        textIsCopied: true
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({
+            textIsCopied: false
+          });
+        }, 700);
+      }
+    );
+  };
 
   render() {
     const { hexCode, colorName } = this.props;
+    const { textIsCopied } = this.state;
 
     return (
       <li
@@ -23,8 +39,7 @@ class SubmittedSwatch extends Component {
       >
         <button>
           <div style={{ background: hexCode }} className="color-blob"></div>
-          <p>{colorName}</p>
-
+          <p>{textIsCopied ? "copied!" : colorName}</p>
           <CopyText text={this.state.textToCopy}></CopyText>
         </button>
       </li>

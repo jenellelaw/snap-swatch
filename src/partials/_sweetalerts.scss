@@ -2,7 +2,7 @@
   // shared styles
   &.container {
     width: 30vw;
-    min-width: 330px;
+    min-width: 500px;
     height: 18vw;
     min-height: 240px;
     border-radius: 0;
@@ -39,6 +39,13 @@
 
     &.title-class {
       color: $white;
+    }
+
+    &.confirm-button-class.got-it {
+      &:focus {
+        background: $black;
+        color: $white;
+      }
     }
   }
 
@@ -99,8 +106,8 @@
   }
 
   &:hover {
-    color: $black;
-    background: lighten($teal, 10%);
+    color: $white;
+    background: $black;
     transform: scale(1.05);
   }
 

@@ -12,6 +12,7 @@
     "react": "^16.9.0",
     "react-animated-css": "^1.2.1",
     "react-copy-text": "^1.0.1",
+    "react-device-detect": "^1.9.9",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.1",
     "sweetalert2": "^8.17.1",
