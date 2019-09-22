@@ -81,13 +81,14 @@ body {
     display: inline-block;
     font-size: 3.6rem;
     animation-delay: 1s;
-    transition: all 1s;
 
     a {
       color: $black;
       text-align: center;
       text-decoration: none;
+      transition: all 0.25s;
 
+      &:hover,
       &:focus {
         color: $blue;
       }
