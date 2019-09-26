@@ -78,8 +78,6 @@
     }
 
     &.confirm-button-class {
-      width: 350px;
-
       @media (max-width: 480px) {
         min-width: 80%;
       }

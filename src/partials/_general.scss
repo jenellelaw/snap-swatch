@@ -2,7 +2,6 @@ body {
   background: $black;
   color: $white;
   font-family: "Space Mono", monospace;
-  overflow-x: hidden !important;
 }
 
 .wrapper {
@@ -168,7 +167,7 @@ body {
     }
 
     &:active {
-      transform: rotate(-90deg) scale(1.1);
+      transform: scale(1.1);
     }
 
     span {

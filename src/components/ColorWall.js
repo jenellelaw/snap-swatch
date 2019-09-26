@@ -1,6 +1,7 @@
 import React from "react";
 import uuidv4 from "uuid";
 import SubmittedSwatch from "./SubmittedSwatch";
+import Masonry from "react-masonry-css";
 
 const ColorWall = ({ submissions }) => {
   return (
@@ -8,6 +9,7 @@ const ColorWall = ({ submissions }) => {
       <div className="wrapper">
         <h2 className="animated pulse infinite">The Color Wall</h2>
         <h3>click on the swatches to copy their hexcodes!</h3>
+
         <ul className="submissions">
           {submissions.map(submission => {
             return (
@@ -23,6 +25,7 @@ const ColorWall = ({ submissions }) => {
                     );
                   })}
                 </ul>
+
                 <div className="submission-name">
                   <p>{submission.paletteName}</p>
                 </div>

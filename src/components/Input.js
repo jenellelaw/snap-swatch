@@ -7,13 +7,13 @@ const Input = ({ name, placeholder, value, handleChange }) => {
         {placeholder}
       </label>
       <input
-        autocomplete="off"
         type="text"
         placeholder={placeholder}
         id={name}
         name={name}
         value={value}
         onChange={handleChange}
+        autoComplete="off"
       />
     </div>
   );

@@ -87,7 +87,7 @@ class App extends Component {
 
     axios
       .get(
-        `https://api.unsplash.com/photos/random/?query=wallpapers&client_id=${API_KEY}`
+        `https://api.unsplash.com/photos/random/?orientation=landscape&client_id=${API_KEY}`
       )
       .then(res => {
         const enteredImageURL = res.data.urls.regular;
@@ -234,9 +234,9 @@ class App extends Component {
     const MySwal = withReactContent(Swal);
     const { enteredImageURL, paletteName, customPalette } = this.state;
 
-    if (!paletteName && customPalette.length < 3) {
+    if (!paletteName && customPalette.length < 4) {
       return MySwal.fire({
-        title: "Give your palette a name and choose at least 3 colors!",
+        title: "Give your palette a name and choose at least 4 colors!",
         confirmButtonText: "Got it!",
         animation: false,
         customClass: {
@@ -260,9 +260,9 @@ class App extends Component {
       });
     }
 
-    if (customPalette.length < 3) {
+    if (customPalette.length < 4) {
       return MySwal.fire({
-        title: "Please choose at least 3 colors!",
+        title: "Please choose at least 4 colors!",
         confirmButtonText: "Got it!",
         animation: false,
         customClass: {
