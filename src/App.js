@@ -86,9 +86,7 @@ class App extends Component {
     const API_KEY = process.env.REACT_APP_UNSPLASH_API_KEY;
 
     axios
-      .get(
-        `https://api.unsplash.com/photos/random/?orientation=landscape&client_id=${API_KEY}`
-      )
+      .get(`https://api.unsplash.com/photos/random/?client_id=${API_KEY}`)
       .then(res => {
         const enteredImageURL = res.data.urls.regular;
 
@@ -234,9 +232,9 @@ class App extends Component {
     const MySwal = withReactContent(Swal);
     const { enteredImageURL, paletteName, customPalette } = this.state;
 
-    if (!paletteName && customPalette.length < 4) {
+    if (!paletteName && customPalette.length < 3) {
       return MySwal.fire({
-        title: "Give your palette a name and choose at least 4 colors!",
+        title: "Give your palette a name and choose at least 3 colors!",
         confirmButtonText: "Got it!",
         animation: false,
         customClass: {
@@ -260,9 +258,9 @@ class App extends Component {
       });
     }
 
-    if (customPalette.length < 4) {
+    if (customPalette.length < 3) {
       return MySwal.fire({
-        title: "Please choose at least 4 colors!",
+        title: "Please choose at least 3 colors!",
         confirmButtonText: "Got it!",
         animation: false,
         customClass: {
@@ -347,7 +345,7 @@ class App extends Component {
         <div className="palette-generator">
           <div className={showSearch ? "wrapper" : "wrapper white-bg"}>
             <h1 className="animated bounceIn">
-              <a href="App.js">SnapSwatch</a>
+              <a href="App.js">snap-swatch</a>
             </h1>
 
             {apiDataLoading && <Loader />}

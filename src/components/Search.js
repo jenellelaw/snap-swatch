@@ -5,7 +5,7 @@ const Search = ({ getRandoImage, getColors, value, handleChange }) => {
   return (
     <header className="search animated fadeInDown">
       <h2 className="animated fadeInDown">
-        Create your photo-inspired color palette!
+        create your photo-inspired color palette!
       </h2>
       <form onSubmit={e => getColors(e)} className="animated fadeInUp ">
         <Input

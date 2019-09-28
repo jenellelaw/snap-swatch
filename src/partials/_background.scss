@@ -1,7 +1,7 @@
 .background {
   position: absolute;
   width: 100vw;
-  height: 100vh;
+  min-height: 300vh;
   overflow-x: hidden;
 
   &-blob {

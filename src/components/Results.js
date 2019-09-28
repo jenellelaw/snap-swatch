@@ -35,7 +35,9 @@ const Results = ({
         </button>
       </div>
       <div className="results-panel results-right">
-        <p className="results-heading">Add up to six colors to your palette</p>
+        <p className="results-heading animated pulse infinite">
+          Add up to six colors to your palette
+        </p>
         <ul className="current-palette-container">
           {generatedPalette.map(paletteColor => {
             return (
