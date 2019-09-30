@@ -139,11 +139,29 @@ body {
   }
 }
 
+@keyframes fadeMoveDown {
+  0% {
+    transform: translate(0, -15px) rotate(-90deg) scale(1);
+  }
+  20% {
+    transform: translate(0, 0px) rotate(-90deg) scale(1);
+  }
+  40% {
+    transform: translate(0, -15px) rotate(-90deg) scale(1);
+  }
+  60% {
+    transform: translate(0, 0px) rotate(-90deg) scale(1);
+  }
+  100% {
+    transform: translate(0, -15px) rotate(-90deg) scale(1);
+  }
+}
+
 .colorwall-link {
   position: absolute;
   bottom: 134px;
   left: -60px;
-  transform: rotate(-90deg) scale(1);
+  animation: fadeMoveDown 3s ease-in-out infinite;
 
   a {
     color: $white;
