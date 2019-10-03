@@ -102,7 +102,6 @@ class App extends Component {
   };
 
   getColors = e => {
-    e.preventDefault();
     const MySwal = withReactContent(Swal);
 
     window.scrollTo(0, 0);
