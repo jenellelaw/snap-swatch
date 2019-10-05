@@ -30,7 +30,7 @@ class App extends Component {
       isTablet: false,
       isSmallTablet: false,
       isPhone: false,
-      textToCopy: ""
+      files: []
     };
   }
 
@@ -102,6 +102,7 @@ class App extends Component {
   };
 
   getColors = e => {
+    e.preventDefault();
     const MySwal = withReactContent(Swal);
 
     window.scrollTo(0, 0);
@@ -171,10 +172,96 @@ class App extends Component {
       });
   };
 
+  getColorsFromUpload = e => {
+    e.preventDefault();
+    const form = new FormData();
+    form.append("palette", "w3c");
+    form.append("sort", "relevance");
+    form.append("image", this.state.files[0]);
+
+    console.log(this.state.files[0]);
+
+    const MySwal = withReactContent(Swal);
+
+    window.scrollTo(0, 0);
+
+    if (this.state.file === []) {
+      return MySwal.fire({
+        title: "Please upload an image",
+        confirmButtonText: "Got it!",
+        animation: false,
+        customClass: {
+          popup: "animated bounceIn custom-alert-style empty-field container",
+          title: "custom-alert-style empty-field title-class",
+          confirmButton: "custom-alert-style empty-field confirm-button-class"
+        }
+      });
+    }
+
+    this.setState({
+      apiDataLoading: true
+    });
+
+    const API_KEY = process.env.REACT_APP_COLORTAG_API_KEY;
+
+    axios({
+      url: "https://proxy.hackeryou.com",
+      method: "POST",
+      dataResponse: "json",
+      paramsSerializer: function(params) {
+        return Qs.stringify(params, { arrayFormat: "brackets" });
+      },
+      params: {
+        reqUrl: "https://apicloud-colortag.p.rapidapi.com/tag-file.json",
+        params: {
+          data: form
+        },
+        proxyHeaders: {
+          "x-rapidapi-host": "apicloud-colortag.p.rapidapi.com",
+          "x-rapidapi-key": API_KEY,
+          "content-type": "multipart/form-data"
+        },
+        xmlToJSON: false
+      }
+    })
+      .then(res => {
+        console.log(res);
+        // this.setState({
+        //   showSearch: false,
+        //   generatedPalette: res.data.tags
+        // });
+      })
+      .catch(error => {
+        MySwal.fire({
+          title: "Unable to processs image...",
+          confirmButtonText: "Try again",
+          animation: false,
+          customClass: {
+            popup: "animated bounceIn custom-alert-style no-results container",
+            title: "custom-alert-style no-results title-class",
+            confirmButton:
+              "custom-alert-style no-results confirm-button-class got-it"
+          }
+        });
+      })
+      .finally(() => {
+        this.setState({
+          apiDataLoading: false
+        });
+      });
+  };
+
   handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
+  };
+
+  handleFileChange = e => {
+    console.log("run function");
+    const files = e.target.files;
+    const filesArr = Array.prototype.slice.call(files);
+    this.setState({ files: filesArr });
   };
 
   addColor = (hexCode, colorName) => {
@@ -317,6 +404,7 @@ class App extends Component {
       apiDataLoading,
       showSearch,
       enteredImageURL,
+      files,
       generatedPalette,
       customPalette,
       swatchError,
@@ -329,7 +417,9 @@ class App extends Component {
 
     const {
       getColors,
+      getColorsFromUpload,
       handleChange,
+      handleFileChange,
       resetSearch,
       addColor,
       removeColor,
@@ -353,9 +443,12 @@ class App extends Component {
               <Search
                 appear="fadeInRight"
                 getColors={getColors}
-                value={enteredImageURL}
-                handleChange={handleChange}
+                getColorsFromUpload={getColorsFromUpload}
                 getRandoImage={getRandoImage}
+                value={enteredImageURL}
+                files={files}
+                handleChange={handleChange}
+                handleFileChange={handleFileChange}
               />
             ) : (
               <Results

@@ -79,7 +79,6 @@ body {
     padding: 0.6rem 2rem 0.9rem;
     display: inline-block;
     font-size: 3.6rem;
-    animation-delay: 1s;
 
     a {
       color: $black;
@@ -122,9 +121,10 @@ body {
     display: none;
   }
 
-  &:active {
+  &:focus {
     color: pink;
     transform: scale(1.05);
+    text-shadow: 2px 2px 18px rgba(0, 0, 0, 0.6);
   }
 
   span {
@@ -180,8 +180,11 @@ body {
       }
     }
 
-    &:hover {
+    &:hover,
+    &:focus {
       color: $orange;
+      transform: scale(1.1);
+      text-shadow: 2px 2px 18px rgba(0, 0, 0, 0.6);
     }
 
     &:active {

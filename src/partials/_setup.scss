@@ -211,6 +211,11 @@ button {
 a {
   text-decoration: none;
   outline: 0;
+
+  &:focus,
+  &:active {
+    outline: 0;
+  }
 }
 
 input::placeholder {

@@ -5,7 +5,7 @@ const ColorWallLink = ({ showSearch, isPhone, isSmallTablet }) => {
   return (
     <div className="colorwall-link">
       {(showSearch || !isPhone) && (
-        <a className={isChrome && "chrome-styles"} href="#colorWall">
+        <a className={isChrome ? "chrome-styles" : undefined} href="#colorWall">
           {isSmallTablet ? (
             <span className="down-arrow">&#8595;</span>
           ) : (
