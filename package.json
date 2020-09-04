@@ -8,7 +8,7 @@
     "eslint-utils": "^1.4.2",
     "firebase": "^6.6.0",
     "gh-pages": "^2.1.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "postcss-cli": "^4.1.1",
     "prop-types": "^15.7.2",
     "qs": "^6.8.0",
